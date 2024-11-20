@@ -1,14 +1,20 @@
 <template>
     <aside>
         <div class="icons">
-            <span v-for="icon in iconNames" @click="bruh(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
-                {{icon.name}}
-           </span>
+            <div v-for="icon in iconNames">
+                <router-link to="/" class ="LinkStyle">
+                <span @click="bruh(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
+                    {{icon.name}}
+                </span>
+            </router-link>
+            </div>
         </div>
         <div class="bottom-icons">
-            <span @click="settingHandler()" class="material-symbols-outlined" :class="{colored: settingsActive}">
-                settings
-            </span>
+            <router-link to="/settings" class="LinkStyle">
+                <span @click="settingHandler()" class="material-symbols-outlined" :class="{colored: settingsActive}">
+                     settings 
+                </span>
+            </router-link>
         </div>
     </aside>
 </template>
@@ -60,6 +66,7 @@
         bruh(0);
         isActive.value[0]=false;
         settingsActive.value = true;
+
     }
 
 </script>
@@ -98,6 +105,10 @@
 
     .bottom-icons > .material-symbols-outlined{
         padding-bottom: 1.5rem;
+    }
+
+    .LinkStyle, .LinkStyle:visited, .LinkStyle:hover, .LinkStyle:active {
+        color: inherit;
     }
 
 </style>
