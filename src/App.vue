@@ -14,7 +14,7 @@
   :root{
     --dark-main: #151515;
     --light-main: #d5d5d5;
-    --sidebar-max-w: 300px;
+    --accent-main: #0469B8;
   }
   
   * {
