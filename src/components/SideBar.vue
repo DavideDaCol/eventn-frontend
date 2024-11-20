@@ -1,24 +1,12 @@
 <template>
     <aside>
         <div class="icons">
-            <span class="material-symbols-outlined">
-                account_circle
-            </span>
-            <span class="material-symbols-outlined">
-                search
-            </span>
-            <span class="material-symbols-outlined">
-                menu
-            </span>
-            <span class="material-symbols-outlined">
-                star
-            </span>
-            <span class="material-symbols-outlined">
-                group
-            </span>
+            <span v-for="icon in iconNames" @click="bruh(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
+                {{icon.name}}
+           </span>
         </div>
         <div class="bottom-icons">
-            <span class="material-symbols-outlined">
+            <span @click="settingHandler()" class="material-symbols-outlined" :class="{colored: settingsActive}">
                 settings
             </span>
         </div>
@@ -26,6 +14,53 @@
 </template>
 
 <script setup>
+
+    import { ref } from 'vue'
+    const iconNames = [
+        {
+            name: 'account_circle',
+            pos: 0
+        },
+        {
+            name: 'search',
+            pos: 1              
+        },
+        {
+            name: 'menu',
+            pos: 2
+        },
+        {
+            name: 'star',
+            pos: 3
+        },
+        {
+            name: 'group',
+            pos: 4
+        }];
+
+    let isActive = ref([]);
+    const settingsActive = ref(false);
+
+    for(let i=0; i<iconNames.length; i++){
+        isActive.value.push(false);
+    }
+
+    console.log("setup is done!");
+
+    const bruh = (index) => {
+        for(let i=0; i<iconNames.length; i++){
+            isActive.value[i] = false;
+        }
+        settingsActive.value = false;
+        isActive.value[index] = true;
+    }
+
+    const settingHandler = () => {
+        //workaround to avoid code duplication
+        bruh(0);
+        isActive.value[0]=false;
+        settingsActive.value = true;
+    }
 
 </script>
 
@@ -38,6 +73,10 @@
         width: calc(2rem + 32px);
         min-height: 100vh;
         padding: 1rem;
+    }
+
+    .colored{
+        color: var(--accent-main);
     }
 
     .icons{
