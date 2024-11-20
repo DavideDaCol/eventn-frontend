@@ -1,47 +1,40 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="app">
+    <SideBar></SideBar>
+    <router-view />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script setup>
+  import SideBar from './components/SideBar.vue'
+</script>
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+<style>
+  /* global CSS variables*/
+  :root{
+    --dark-main: #151515;
+    --light-main: #d5d5d5;
+    --accent-main: #0469B8;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Source Sans 3', sans-serif;
+  }
 
-@media (min-width: 1024px) {
-  header {
+  .app{
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    /* targets the router view element */
+    main{
+      /* sets the shrink ratio for every flex column */
+      flex: 1 1 0;
+      padding: 1rem;
+      /*media query for sidebar behavior, 768 is the width of an iPad screen in portrait mode*/
+      @media (max-width: 768px) {
+        padding-left: 6rem;
+      }
+    }
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
