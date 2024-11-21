@@ -26,6 +26,7 @@
 
   .app{
     display: flex;
+    height: 100vh;
     /* targets the router view element */
     main{
       /* sets the shrink ratio for every flex column */
