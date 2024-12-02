@@ -2,6 +2,7 @@
   <div id="bruh" ref="mapContainer">
 
   </div>
+  <InfoPopup :eventPopup="eventPopup"/>
 </template>
 
 <script setup>
@@ -10,11 +11,14 @@ import L, {icon} from 'leaflet'
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import {filename} from 'pathe/utils';
-const eventTags = ['Musica', 'Festival', 'Sport', 'Conferenza', 'Sagra'];
+import InfoPopup from './InfoPopup.vue';
 
   const map = ref();
   //allows the div container to be responsive
   const mapContainer = ref();
+  const eventPopup = ref({
+    eventName: "nope"
+  });
 
   //function is called when component is mounted
   onMounted( async () => {
@@ -50,16 +54,23 @@ const eventTags = ['Musica', 'Festival', 'Sport', 'Conferenza', 'Sagra'];
   }
 
   function createPins(allEvents,images){
+    //parses the events
     const eventList = allEvents.data;
     console.log(images);
     eventList.forEach(element => {
+      //gets event coordinates
       const eventCoord = element.eventPosition;
       console.log(element.eventTag);
       const pinColored = optionsCreator(images[element.eventTag]);
-      L.marker(eventCoord,pinColored).addTo(map.value);
+      //adds custom options and creates event handler for the InfoPopup component
+      const toAdd = L.marker(eventCoord,pinColored).on("click", () => {
+        eventPopup.value = element;
+      })
+      toAdd.addTo(map.value);
       console.log(`created pin for event ${element.eventName}`)
     });
   }
+
 </script>
 
 <style scoped> 
