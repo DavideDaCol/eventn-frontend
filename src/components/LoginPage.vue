@@ -1,0 +1,3 @@
+<template>
+    <h1>Login page test</h1>
+</template>
