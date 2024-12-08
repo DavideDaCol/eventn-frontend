@@ -1,18 +1,23 @@
 <template>
     <aside>
         <div class="icons">
-            <div v-for="icon in iconNames">
-                <router-link to="/" class ="LinkStyle">
-                <span @click="bruh(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
-                    {{icon.name}}
+            <router-link to="/user" class ="LinkStyle">
+                <span @click="bruh(0)" class="material-symbols-outlined" :class="{colored: isActive[0]}">
+                    account_circle
                 </span>
             </router-link>
+            <div v-for="icon in iconNames">
+                <router-link to="/" class ="LinkStyle">
+                    <span @click="bruh(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
+                        {{icon.name}}
+                    </span>
+                </router-link>
             </div>
         </div>
         <div class="bottom-icons">
             <router-link to="/settings" class="LinkStyle">
                 <span @click="settingHandler()" class="material-symbols-outlined" :class="{colored: settingsActive}">
-                     settings 
+                    settings 
                 </span>
             </router-link>
         </div>
@@ -23,10 +28,6 @@
 
     import { ref } from 'vue'
     const iconNames = [
-        {
-            name: 'account_circle',
-            pos: 0
-        },
         {
             name: 'search',
             pos: 1              
@@ -47,14 +48,14 @@
     let isActive = ref([]);
     const settingsActive = ref(false);
 
-    for(let i=0; i<iconNames.length; i++){
+    for(let i=0; i<=iconNames.length; i++){
         isActive.value.push(false);
     }
 
     console.log("setup is done!");
 
     const bruh = (index) => {
-        for(let i=0; i<iconNames.length; i++){
+        for(let i=0; i<=iconNames.length; i++){
             isActive.value[i] = false;
         }
         settingsActive.value = false;
