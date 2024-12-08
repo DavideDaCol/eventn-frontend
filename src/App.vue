@@ -15,6 +15,7 @@
     --dark-main: #151515;
     --light-main: #d5d5d5;
     --accent-main: #0469B8;
+    --main-font: 'Source Sans 3';
   }
   
   * {

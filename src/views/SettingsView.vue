@@ -1,5 +1,115 @@
 <template>
     <main class="settings-page">
-        <h1>impostazioni</h1>
+        <h1 id="header">Impostazioni</h1>
+        <div class="wrap">
+            <div id="col1" class="col">
+                <h2>Account</h2>
+                <a href=""><h3>Modifica dati</h3></a>
+                <a href=""><h3>Effettua logout</h3></a>
+                <a href="" class="danger"><h3 class="danger">Elimina account</h3></a>
+                <h2>Lingua</h2>
+                <h3>Lingua attuale: Italiano (Italia)</h3>
+                <h4 class="minor">La traduzione, al momento, è WIP. Ci scusiamo per il disagio</h4>
+            </div>
+            <div id="col2" class="col">
+                <h2>Vuoi pubblicare un evento?</h2>
+                <h3></h3>
+                <h4>Per poter pubblicare eventi su EvenTN, ogni richiesta dovrà essere prima presentata presso il comune di Trento in modo da poter verificare eventuali permessi e criteri legali. In seguito all’approvazione dell’evento, riceverai un codice da inserire per poter pubblicare il tuo evento! <br /><br />Inserisci il codice distruibuito dal comune per accedere alla pagina di pubblicazione dell’evento.</h4>
+                <form action="" method="post">
+                    <input id="codeField" type="text" placeholder="Inserisci il codice evento..."><br>
+                    <button @click="submitCode" id="submitButton">Pubblica evento</button>
+                </form>
+            </div>
+        </div>
     </main>
 </template>
+
+<script setup>
+    function submitCode(){
+        return 0;
+    }
+</script>
+
+<style scoped>
+    main{
+        background-color: var(--dark-main);
+        color: var(--light-main);
+    }
+
+    .wrap{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .col{
+        margin: 2rem;
+    }
+
+    a, a:visited, a:hover, a:active {
+        color: #B8B5B5;
+    }
+
+    .danger{
+        color: #B64848;
+        text-decoration: none;
+    }
+
+    .minor{
+        color: #A7A4A4;
+        margin-top: 1rem;
+    }
+    
+    #header{
+        margin-left: 3rem;
+        margin-top: 1rem;
+        font-size: 50px;
+    }
+
+    #col1{
+        width: 33%;
+        flex-grow: 1;
+        flex-shrink: 0;
+        margin-left: 3rem;
+    }
+
+    #col1 > h2,h3{
+        margin-bottom: 2rem;
+    }
+
+    #col2{
+        flex-grow: 2;
+        text-align: center;
+    }
+
+    form{
+        margin-top: 2rem;
+    }
+
+    form > input,button{
+        margin-bottom: 1rem;
+    }
+
+    #codeField{
+        width: 80%;
+        height: 2.7rem;
+        text-align: center;
+        background-color: var(--light-main);
+        color: var(--dark-main);
+        border-radius: 20px;
+        border: 2px solid #A7A4A4;
+        font-family: var(--main-font);
+        font-weight: 700;
+    }
+
+    #submitButton{
+        width: 50%;
+        height: 2.5rem;
+        background-color: var(--accent-main);
+        color: var(--light-main);
+        border-radius: 20px;
+        border: 0;
+        font-family: var(--main-font);
+        font-weight: 700;
+    }
+
+</style>
