@@ -1,13 +1,13 @@
 <template>
-    <LoginPage v-if="isLogged" />
-    <h1 v-else >Error - user is not logged in</h1>
+    <LoginPage v-if="!isLogged" />
+    <h1 v-else >Error - user is already logged in</h1>
 </template>
 
 <script setup>
 
-    import LoginPage from '../components/LoginPage.vue'
+    import LoginPage from '../components/LoginPage.vue';
     // TODO: change when login is implemented
-    const isLogged = true
+    const isLogged = document.cookie;
 
 </script>
 
