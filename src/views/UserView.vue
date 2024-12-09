@@ -1,6 +1,6 @@
 <template>
     <LoginPage v-if="isLogged" />
-    <UserInfo v-else />
+    <h1 v-else >Error - user is not logged in</h1>
 </template>
 
 <script setup>
