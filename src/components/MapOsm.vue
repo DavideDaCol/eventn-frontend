@@ -25,6 +25,7 @@ import InfoPopup from './InfoPopup.vue';
     //make new map
     map.value = L.map(mapContainer.value).setView([46.069, 11.124], 13.5);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      minZoom: 11,
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map.value);
@@ -34,7 +35,7 @@ import InfoPopup from './InfoPopup.vue';
       Object.entries(allPins).map(([key, value]) => [filename(key), value.default])
     );
     //get all the available events
-    const allEvents = await axios.get('http://localhost:8080/events/all');
+    const allEvents = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/all`);
     //place pins on map
     createPins(allEvents,images);
   });

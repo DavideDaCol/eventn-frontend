@@ -23,7 +23,7 @@
   }
 
   async function getUserInfo(){
-      const user = await axios.get('http://localhost:8080/users/info', { withCredentials: true });
+      const user = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/info`, { withCredentials: true });
       localStorage.setItem('user', JSON.stringify(user.data));
       console.log(cachedUser);
       cachedUser = user.data;

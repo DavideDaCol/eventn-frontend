@@ -14,7 +14,7 @@
         }
         
         try{
-            const response = await axios.post('http://localhost:8080/users/login', request, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`, request, {
                 headers: {'Content-Type': 'application/json'},
                 withCredentials: true
             });
