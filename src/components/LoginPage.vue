@@ -1,6 +1,29 @@
 <script setup>
+    import axios from 'axios';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
+
+    const username = defineModel('username');
+    const password  = defineModel('password');
+
     async function login() {
-        console.log("test");
+        const request = {
+            "username": username.value,
+            "password": password.value
+        }
+        
+        try{
+            await axios.post('http://localhost:8080/users/login', request, {
+                headers: {'Content-Type': 'application/json'},
+                withCredentials: true
+            });
+            alert("login successful. Page will be reloaded");
+            router.go();
+        } catch (error){
+            alert("login failed. please try again");
+            console.log(error);
+        }
     }
 </script>
 
@@ -9,8 +32,8 @@
         <div class="wrap">
             <h1>Login</h1>
             <form @submit.prevent="login">
-                <input type="text" name="username" id="username" placeholder="inserisci username" />
-                <input type="password" name="password" id="password" placeholder="inserisci password" />
+                <input type="text" v-model="username" placeholder="inserisci username" />
+                <input type="password" v-model="password"  placeholder="inserisci password" />
                 <button type="submit">Login</button>
             </form>
         </div>
