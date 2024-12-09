@@ -5,7 +5,7 @@
             <div id="col1" class="col">
                 <h2>Account</h2>
                 <a href=""><h3>Modifica dati</h3></a>
-                <a href=""><h3>Effettua logout</h3></a>
+                <a @click="clearCookies"><h3>Effettua logout</h3></a>
                 <a href="" class="danger"><h3 class="danger">Elimina account</h3></a>
                 <h2>Lingua</h2>
                 <h3>Lingua attuale: Italiano (Italia)</h3>
@@ -15,9 +15,9 @@
                 <h2>Vuoi pubblicare un evento?</h2>
                 <h3></h3>
                 <h4>Per poter pubblicare eventi su EvenTN, ogni richiesta dovrà essere prima presentata presso il comune di Trento in modo da poter verificare eventuali permessi e criteri legali. In seguito all’approvazione dell’evento, riceverai un codice da inserire per poter pubblicare il tuo evento! <br /><br />Inserisci il codice distruibuito dal comune per accedere alla pagina di pubblicazione dell’evento.</h4>
-                <form action="" method="post">
+                <form @submit.prevent="submitCode">
                     <input id="codeField" type="text" placeholder="Inserisci il codice evento..."><br>
-                    <button @click="submitCode" id="submitButton">Pubblica evento</button>
+                    <button type="submit" id="submitButton">Pubblica evento</button>
                 </form>
             </div>
         </div>
@@ -25,8 +25,17 @@
 </template>
 
 <script setup>
+    //TODO: real implementation
     function submitCode(){
         return 0;
+    }
+
+    function clearCookies(){
+        // gets the token cookie and sets it to expire in 1970 (i. e. instantly)
+        document.cookie = "token" +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        //removes the user info from LocalStorage
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user');
     }
 </script>
 
