@@ -1,7 +1,7 @@
 <template>
-    <Map></Map>
+    <MapOsm></MapOsm>
 </template>
 
 <script setup>
-    import Map from '../components/Map.vue'
+    import MapOsm from '../components/MapOsm.vue'
 </script>

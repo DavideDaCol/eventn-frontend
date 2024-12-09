@@ -7,7 +7,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import L, {icon} from 'leaflet'
+import L from 'leaflet'
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import {filename} from 'pathe/utils';
