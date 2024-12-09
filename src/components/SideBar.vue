@@ -2,13 +2,13 @@
     <aside>
         <div class="icons">
             <router-link to="/user" class ="LinkStyle">
-                <span @click="bruh(0)" class="material-symbols-outlined" :class="{colored: isActive[0]}">
+                <span @click="sidebarSwitch(0)" class="material-symbols-outlined" :class="{colored: isActive[0]}">
                     account_circle
                 </span>
             </router-link>
             <div v-for="icon in iconNames">
                 <router-link to="/" class ="LinkStyle">
-                    <span @click="bruh(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
+                    <span @click="sidebarSwitch(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
                         {{icon.name}}
                     </span>
                 </router-link>
@@ -48,24 +48,32 @@
     let isActive = ref([]);
     const settingsActive = ref(false);
 
+    //initializes all icons to be inactive on startup
     for(let i=0; i<=iconNames.length; i++){
         isActive.value.push(false);
     }
 
     console.log("setup is done!");
 
-    const bruh = (index) => {
+    const sidebarSwitch = (index) => {
+
+        //sets all icons to inactive
         for(let i=0; i<=iconNames.length; i++){
             isActive.value[i] = false;
         }
+
+        //only sets selected icon to active
         settingsActive.value = false;
         isActive.value[index] = true;
     }
 
     const settingHandler = () => {
-        //workaround to avoid code duplication
-        bruh(0);
+        //workaround to avoid code duplication, sets first icon to active and then 
+        //manually turns it off
+        sidebarSwitch(0);
         isActive.value[0]=false;
+
+        //sets settings icon to active
         settingsActive.value = true;
 
     }

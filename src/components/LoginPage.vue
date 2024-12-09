@@ -4,22 +4,30 @@
 
     const router = useRouter();
 
+    //definemodel is used to define a 2-way reactive value (updates both js and html)
     const username = defineModel('username');
     const password  = defineModel('password');
 
     async function login() {
+        //request formatting based on backend documentation
         const request = {
             "username": username.value,
             "password": password.value
         }
         
         try{
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`, request, {
+            //makes actual axios post request
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`,
+                request, {
                 headers: {'Content-Type': 'application/json'},
-                withCredentials: true
+                withCredentials: true //makes it so the server sends back the auth cookie
             });
+
+            //saves userId to the browser for the UserInfo component
             localStorage.setItem('userId', response.data.id);
             alert("login successful. Page will be reloaded");
+
+            //page reload: router tells the page to go back to itself
             router.go();
         } catch (error){
             alert("login failed. please try again");
