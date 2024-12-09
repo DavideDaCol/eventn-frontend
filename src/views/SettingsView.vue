@@ -5,7 +5,7 @@
             <div id="col1" class="col">
                 <h2>Account</h2>
                 <a href=""><h3>Modifica dati</h3></a>
-                <a href=""><h3>Effettua logout</h3></a>
+                <a @click="clearCookies"><h3>Effettua logout</h3></a>
                 <a href="" class="danger"><h3 class="danger">Elimina account</h3></a>
                 <h2>Lingua</h2>
                 <h3>Lingua attuale: Italiano (Italia)</h3>
@@ -27,6 +27,14 @@
 <script setup>
     function submitCode(){
         return 0;
+    }
+
+    function clearCookies(){
+        // gets the token cookie and sets it to expire in 1970 (the oldest a UNIX date can go)
+        document.cookie = "token" +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        //removes the user info from LocalStorage
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user');
     }
 </script>
 
