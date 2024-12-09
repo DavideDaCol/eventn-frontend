@@ -14,10 +14,11 @@
         }
         
         try{
-            await axios.post('http://localhost:8080/users/login', request, {
+            const response = await axios.post('http://localhost:8080/users/login', request, {
                 headers: {'Content-Type': 'application/json'},
                 withCredentials: true
             });
+            localStorage.setItem('userId', response.data.id);
             alert("login successful. Page will be reloaded");
             router.go();
         } catch (error){
