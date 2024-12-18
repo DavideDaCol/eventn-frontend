@@ -1,52 +1,62 @@
 <template>
     <aside>
         <div class="icons">
-            <router-link to="/user" class ="LinkStyle">
-                <span @click="sidebarSwitch(0)" class="material-symbols-outlined" :class="{colored: isActive[0]}">
-                    account_circle
-                </span>
-            </router-link>
-            <div v-for="icon in iconNames">
-                <router-link to="/" class ="LinkStyle">
-                    <span @click="sidebarSwitch(icon.pos)" class="material-symbols-outlined" :class="{colored: isActive[icon.pos]}">
-                        {{icon.name}}
-                    </span>
-                </router-link>
-            </div>
+            <span @click="fixedHandler(0)" class="material-symbols-outlined" :class="{colored: loginActive}">
+                account_circle
+            </span>
+            <span @click="sidebarSwitch(1,'searchBar')" class="material-symbols-outlined" :class="{colored: isActive[1]}">
+                search
+            </span>
+            <span @click="sidebarSwitch(2,'hallTab')" class="material-symbols-outlined" :class="{colored: isActive[2]}">
+                menu
+            </span>
+            <span @click="sidebarSwitch(3,'savedTab')" class="material-symbols-outlined" :class="{colored: isActive[3]}">
+                star
+            </span>
+            <span @click="sidebarSwitch(4,'friendsTab')" class="material-symbols-outlined" :class="{colored: isActive[4]}">
+                group
+            </span>
+
         </div>
         <div class="bottom-icons">
-            <router-link to="/settings" class="LinkStyle">
-                <span @click="settingHandler()" class="material-symbols-outlined" :class="{colored: settingsActive}">
-                    settings 
-                </span>
-            </router-link>
+            <span @click="fixedHandler(1)" class="material-symbols-outlined" :class="{colored: settingsActive}">
+                settings 
+            </span>
         </div>
     </aside>
 </template>
 
 <script setup>
 
+    import router from '@/router';
     import { ref } from 'vue'
+    let prevEvent = 'sink';
     const iconNames = [
         {
             name: 'search',
-            pos: 1              
+            pos: 1,
+            emit: 'searchBar'              
         },
         {
             name: 'menu',
-            pos: 2
+            pos: 2,
+            emit: 'hallTab'
         },
         {
             name: 'star',
-            pos: 3
+            pos: 3,
+            emit: 'savedTab'
         },
         {
             name: 'group',
-            pos: 4
+            pos: 4,
+            emit: 'friendsTab'
         }];
 
+    const emit = defineEmits(['searchBar' , 'hallTab' , 'savedTab', 'friendsTab', 'sink']);
     let isActive = ref([]);
     const settingsActive = ref(false);
+    const loginActive = ref(false);
 
     //initializes all icons to be inactive on startup
     for(let i=0; i<=iconNames.length; i++){
@@ -55,27 +65,59 @@
 
     console.log("setup is done!");
 
-    const sidebarSwitch = (index) => {
+    const sidebarSwitch = (index,event) => {
 
         //sets all icons to inactive
         for(let i=0; i<=iconNames.length; i++){
-            isActive.value[i] = false;
+            if(i!=index){
+                isActive.value[i] = false;
+            }
         }
 
         //only sets selected icon to active
         settingsActive.value = false;
-        isActive.value[index] = true;
+        isActive.value[index] = !isActive.value[index];
+        emit(event);
+        //turns off previous component only if it's different
+        if(prevEvent != event){
+            emit(prevEvent);
+            prevEvent = event;
+        }
+
+        //sends user back to the map if the icon isn't the login or the settings page
+        if(index > 0 && index < 5){
+            router.replace({path: '/'});
+        }
     }
 
-    const settingHandler = () => {
-        //workaround to avoid code duplication, sets first icon to active and then 
-        //manually turns it off
-        sidebarSwitch(0);
-        isActive.value[0]=false;
+    const fixedHandler = (type) => {
+        //turns off any previous component
+        emit(prevEvent);
+        prevEvent = 'sink';
+        
+        for(let i=1; i<=iconNames.length; i++){
+            isActive.value[i] = false;
+        }
 
-        //sets settings icon to active
-        settingsActive.value = true;
+        if(type === 0){
+            changeFixedStatus(loginActive,'/user');
+        } else if(type === 1){
+            changeFixedStatus(settingsActive,'/settings');
+        }
+        
 
+    }
+
+    const changeFixedStatus = (reference, newPath) => {
+        console.log("fr");
+        if(reference.value){
+            reference.value = !reference.value;
+            router.replace({path: '/'});
+        } else {
+            reference.value = true;
+            console.log(newPath);
+            router.push({path: newPath});
+        }
     }
 
 </script>
@@ -105,7 +147,8 @@
 
     .material-symbols-outlined{
         font-size: 2rem;
-        padding-bottom: 3rem;
+        margin-bottom: 3rem;
+        user-select: none;
     }
 
     .bottom-icons{

@@ -1,12 +1,32 @@
 <template>
     <div class="app">
-        <SideBar></SideBar>
+        <SideBar v-if="mobile"
+            @search-bar="toggleSearch = !toggleSearch"
+            @hall-tab="toggleHall = !toggleHall"
+            @saved-tab="toggleSaved = !toggleSaved"></SideBar>
+        <SearchBar v-if="toggleSearch"></SearchBar>
         <router-view />
     </div>
 </template>
 
 <script setup>
+    import SearchBar from './components/SearchBar.vue';
     import SideBar from './components/SideBar.vue'
+    import { ref } from 'vue'
+
+    const toggleSearch = ref(false);
+    const toggleHall = ref(false);
+    const toggleSaved = ref(false);
+
+    const mobile = ref(false);
+    const isDesktop = () => { 
+        console.log(screen.width);
+        if(screen.width >= 760){
+            return true;
+        } else return false;
+    }; 
+
+    mobile.value=isDesktop();
 </script>
 
 <style>
