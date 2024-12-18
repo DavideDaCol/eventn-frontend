@@ -21,7 +21,7 @@
     //function is called when component is mounted
     onMounted( async () => {
         //make new map leaflet object
-        map.value = L.map(mapContainer.value).setView([46.069, 11.124], 13.5);
+        map.value = L.map(mapContainer.value, {zoomControl: false}).setView([46.069, 11.124], 13.5);
 
         //creates layer for all the map tiles (refer to Leaflet documentation about tiles)
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
