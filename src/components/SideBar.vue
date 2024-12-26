@@ -76,6 +76,7 @@
 
         //only sets selected icon to active
         settingsActive.value = false;
+        loginActive.value = false;
         isActive.value[index] = !isActive.value[index];
         emit(event);
         //turns off previous component only if it's different
@@ -109,7 +110,6 @@
     }
 
     const changeFixedStatus = (reference, newPath) => {
-        console.log("fr");
         if(reference.value){
             reference.value = !reference.value;
             router.replace({path: '/'});
