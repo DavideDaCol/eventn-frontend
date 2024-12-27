@@ -30,6 +30,12 @@
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map.value);
 
+        //set bounds to the navigation of the map
+        const boundPoint1 = L.latLng(45.70477120908757, 10.439696563104636);
+        const boundPoint2 = L.latLng(46.49243389138334, 11.802673739144229);
+        const boundsTrento = L.latLngBounds(boundPoint1, boundPoint2);
+        map.value.setMaxBounds(boundsTrento);
+
         //get pins from assets folder
         const allPins = import.meta.glob('@/assets/pins/*.png', { eager: true });
         //maps all images to their corresponding name (file name mapped to corresponding file path)
