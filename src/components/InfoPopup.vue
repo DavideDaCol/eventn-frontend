@@ -17,7 +17,7 @@
         </div>
         <div class="actions">
             <button id="presence">ci sono!</button>
-            <button id="info">informazioni</button>
+            <button @click="openEvent" id="info">informazioni</button>
         </div>
       </div>
     </div>
@@ -25,6 +25,8 @@
   
   <script setup>
   import { watch, toRef, ref } from 'vue';
+  import router from '@/router';
+  import { dateFormatter } from '@/middleware/dateFormatter';
   
   const props = defineProps(['eventPopup']);
   const eventPopup = toRef(props, 'eventPopup');
@@ -43,8 +45,8 @@
   
       popupName.value = eventPopup.value.eventName;
       popupDesc.value = eventPopup.value.eventDescription;
-      popupStart.value = dateConverter(eventPopup.value.eventStart);
-      popupEnd.value = dateConverter(eventPopup.value.eventLength);
+      popupStart.value = dateFormatter(eventPopup.value.eventStart);
+      popupEnd.value = dateFormatter(eventPopup.value.eventLength);
       popupAttending.value = eventPopup.value.eventPresence;
   
       if (popupName.value !== "nope") {
@@ -52,9 +54,10 @@
       } else isActive = false;
     }
   );
-  
-  const dateConverter = (date) =>
-    new Date(date).toLocaleDateString("it-IT", { day: "numeric", month: "long" });
+
+    function openEvent() {
+        router.replace({path: `/event/${eventPopup.value._id}`});
+    }
   </script>
   
   <style scoped>
@@ -64,7 +67,7 @@
   transform: translateX(-50%);
   bottom: 10%;
   width: 50vw;
-  height: 33vh; /* Fixed height: one-third of the screen height */
+  height: 33vh;
   z-index: 400;
   background-color: var(--dark-main);
   padding: 1rem 2rem;
