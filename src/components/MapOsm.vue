@@ -25,9 +25,9 @@
 
         //creates layer for all the map tiles (refer to Leaflet documentation about tiles)
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        minZoom: 11, 
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            minZoom: 11, 
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map.value);
 
         //set bounds to the navigation of the map
