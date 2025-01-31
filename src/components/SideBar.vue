@@ -1,26 +1,29 @@
 <template>
     <aside>
         <div class="icons">
-            <span @click="fixedHandler(0)" class="material-symbols-outlined" :class="{colored: loginActive}">
+            <span
+                @click="routerSwitch(0)"
+                class="material-symbols-outlined"
+                :class="{ colored: loginActive }"
+            >
                 account_circle
             </span>
-            <span @click="sidebarSwitch(1,'searchBar')" class="material-symbols-outlined" :class="{colored: isActive[1]}">
-                search
+            <span 
+                v-for="(icon, index) in iconNames" :key="index"
+                @click="componentSwitch(icon.pos, icon.emit)"
+                class="material-symbols-outlined"
+                :class="{ colored: isActive[index + 1] }"
+            >
+                {{ icon.name }}
             </span>
-            <span @click="sidebarSwitch(2,'hallTab')" class="material-symbols-outlined" :class="{colored: isActive[2]}">
-                menu
-            </span>
-            <span @click="sidebarSwitch(3,'savedTab')" class="material-symbols-outlined" :class="{colored: isActive[3]}">
-                star
-            </span>
-            <span @click="sidebarSwitch(4,'friendsTab')" class="material-symbols-outlined" :class="{colored: isActive[4]}">
-                group
-            </span>
-
         </div>
         <div class="bottom-icons">
-            <span @click="fixedHandler(1)" class="material-symbols-outlined" :class="{colored: settingsActive}">
-                settings 
+            <span
+                @click="routerSwitch(1)"
+                class="material-symbols-outlined"
+                :class="{ colored: settingsActive }"
+            >
+                settings
             </span>
         </div>
     </aside>
@@ -29,13 +32,13 @@
 <script setup>
 
     import router from '@/router';
-    import { ref } from 'vue'
-    let prevEvent = 'sink';
+    import { ref } from 'vue';
+    let prevEvent = 'nullEmit'; //used as a type of null object, "an object with no referenced value or with defined neutral behavior"
     const iconNames = [
         {
-            name: 'search',
-            pos: 1,
-            emit: 'searchBar'              
+            name: 'search', //name of the icon to display
+            pos: 1, //position of the icon in the sidebar, top to bottom (pos 0 is the login icon)
+            emit: 'searchBar' //name of the actual emit that is sent to the other components
         },
         {
             name: 'menu',
@@ -53,70 +56,76 @@
             emit: 'friendsTab'
         }];
 
-    const emit = defineEmits(['searchBar' , 'hallTab' , 'savedTab', 'friendsTab', 'sink']);
-    let isActive = ref([]);
+    const emit = defineEmits(['searchBar', 'hallTab', 'savedTab', 'friendsTab', 'nullEmit']);
+    const isActive = ref([]); //array with the state of all of the icons
     const settingsActive = ref(false);
     const loginActive = ref(false);
 
     //initializes all icons to be inactive on startup
-    for(let i=0; i<=iconNames.length; i++){
+    for (let i = 0; i <= iconNames.length; i++) {
         isActive.value.push(false);
     }
 
-    console.log("setup is done!");
-
-    const sidebarSwitch = (index,event) => {
+    //function used to mount auxiliary components on top of the map
+    const componentSwitch = (index, event) => {
 
         //sets all icons to inactive
-        for(let i=0; i<=iconNames.length; i++){
-            if(i!=index){
+        for (let i = 0; i <= iconNames.length; i++) {
+            if (i != index) {
                 isActive.value[i] = false;
             }
         }
 
         //only sets selected icon to active
         settingsActive.value = false;
+        loginActive.value = false;
         isActive.value[index] = !isActive.value[index];
+
+        //sends the event associated to the icon to all other components
         emit(event);
-        //turns off previous component only if it's different
-        if(prevEvent != event){
+
+        //if the component has changed, unmount the previous one
+        if (prevEvent != event) {
             emit(prevEvent);
             prevEvent = event;
-        }
+        } else prevEvent = "nullEmit";
 
         //sends user back to the map if the icon isn't the login or the settings page
-        if(index > 0 && index < 5){
-            router.replace({path: '/'});
+        if (index > 0 && index < 5) {
+            router.replace({ path: '/' });
         }
     }
 
-    const fixedHandler = (type) => {
+    //function to navigate to a new page instead of mounting a component
+    const routerSwitch = (type) => {
         //turns off any previous component
         emit(prevEvent);
-        prevEvent = 'sink';
-        
-        for(let i=1; i<=iconNames.length; i++){
+        prevEvent = 'nullEmit';
+
+        //sets all the icons to inactive
+        for (let i = 1; i <= iconNames.length; i++) {
             isActive.value[i] = false;
         }
 
-        if(type === 0){
-            changeFixedStatus(loginActive,'/user');
-        } else if(type === 1){
-            changeFixedStatus(settingsActive,'/settings');
+        //change the router page
+        if (type === 0) {
+            navigateTo(loginActive, '/user');
+        } else if (type === 1) {
+            navigateTo(settingsActive, '/settings');
         }
-        
+
 
     }
 
-    const changeFixedStatus = (reference, newPath) => {
-        console.log("fr");
-        if(reference.value){
+    const navigateTo = (reference, newPath) => {
+        if (reference.value) {
+            //user wants to go back to the map: reset everything
             reference.value = !reference.value;
-            router.replace({path: '/'});
+            router.replace({ path: '/' });
         } else {
+            //user wants to change the page
             reference.value = true;
-            console.log(newPath);
-            router.push({path: newPath});
+            router.push({ path: newPath });
         }
     }
 
@@ -133,11 +142,11 @@
         padding: 1rem;
     }
 
-    .colored{
+    .colored {
         color: var(--accent-main);
     }
 
-    .icons{
+    .icons {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -145,23 +154,24 @@
         padding: 0.5rem 0;
     }
 
-    .material-symbols-outlined{
+    .material-symbols-outlined {
         font-size: 2rem;
         margin-bottom: 3rem;
         user-select: none;
     }
 
-    .bottom-icons{
+    .bottom-icons {
         margin-top: auto;
     }
 
-    .bottom-icons > .material-symbols-outlined{
+    .bottom-icons>.material-symbols-outlined {
         padding-bottom: 1.5rem;
     }
 
-    .LinkStyle, .LinkStyle:visited, .LinkStyle:hover, .LinkStyle:active {
+    .LinkStyle,
+    .LinkStyle:visited,
+    .LinkStyle:hover,
+    .LinkStyle:active {
         color: inherit;
     }
-
 </style>
-
