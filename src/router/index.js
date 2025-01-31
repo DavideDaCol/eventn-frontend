@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import UserView from '../views/UserView.vue'
+import EventPage from '../components/EventPage.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -18,6 +19,10 @@ const router = createRouter({
         {
             path: '/user',
             component: UserView
+        },
+        {
+            path: '/event/:id',
+            component: EventPage
         }
     ]
 })
