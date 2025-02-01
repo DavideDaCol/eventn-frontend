@@ -38,7 +38,7 @@ async function loadValues(eventId) {
             timeEnd: timeFormatter(newEvent.eventLength),
             desc: newEvent.eventDescription,
             pos: newEvent.eventPosition,
-            image: newEvent.eventImage ?? "https://i.ibb.co/fV0kYc6T/sample-Image.jpg",
+            image: newEvent.eventImage ?  newEvent.eventImage : "https://i.ibb.co/fV0kYc6T/sample-Image.jpg",
         };
 
         await nextTick(); // Ensure Vue updates the DOM before initializing the map
