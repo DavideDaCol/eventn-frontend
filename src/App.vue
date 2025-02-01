@@ -48,7 +48,6 @@
 
     .app{
         display: flex;
-        height: 100vh;
         /* targets the router view element */
         main{
         /* sets the shrink ratio for every flex column */
@@ -59,5 +58,10 @@
             padding-left: 6rem;
         }
         }
+    }
+
+    html, body, .app {
+        height: auto;
+        min-height: 100vh;
     }
 </style>

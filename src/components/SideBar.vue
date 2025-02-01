@@ -133,12 +133,14 @@
 
 <style scoped>
     aside {
+        position: sticky;
+        top: 0;
+        width: calc(2rem + 32px);
+        height: 100vh;
         display: flex;
         flex-direction: column;
         background-color: var(--dark-main);
         color: var(--light-main);
-        width: calc(2rem + 32px);
-        min-height: 100vh;
         padding: 1rem;
     }
 
