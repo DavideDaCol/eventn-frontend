@@ -9,6 +9,7 @@
     import 'leaflet/dist/leaflet.css';
     import axios from 'axios';
     import {filename} from 'pathe/utils';
+    import { globalEvents } from '@/stores/events';
     import InfoPopup from './InfoPopup.vue';
 
     const map = ref();
@@ -73,6 +74,7 @@
     function createPins(allEvents,images){
         
         const eventList = allEvents.data;
+        globalEvents.value = eventList;
 
         eventList.forEach(element => {
 
