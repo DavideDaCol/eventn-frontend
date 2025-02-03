@@ -1,9 +1,11 @@
 <template>
+    <LoadingScreen v-if="isLoading" />
     <div id="bruh" ref="mapContainer"></div>
     <InfoPopup :eventPopup="eventPopup"/>
 </template>
 
 <script setup>
+    import LoadingScreen from './LoadingScreen.vue';
     import { onMounted, ref } from 'vue';
     import L from 'leaflet'
     import 'leaflet/dist/leaflet.css';
@@ -12,6 +14,7 @@
     import { globalEvents } from '@/stores/events';
     import InfoPopup from './InfoPopup.vue';
 
+    let isLoading = ref(true);
     const map = ref();
     //allows the div container to be responsive
     const mapContainer = ref();
@@ -49,6 +52,7 @@
         const allEvents = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/all`);
         //place pins on map
         createPins(allEvents,images);
+        isLoading.value = false;
     });
 
     //creates the appropiate pin object based on the event tag
@@ -91,6 +95,7 @@
             toAdd.addTo(map.value);
             console.log(`created pin for event ${element.eventName}`)
         });
+        
     }
 
 </script>

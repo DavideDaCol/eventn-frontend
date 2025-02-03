@@ -1,11 +1,13 @@
 <script setup>
 import axios from 'axios';
 import { useRoute } from 'vue-router';
-import { ref, watchEffect, onBeforeUnmount, nextTick } from 'vue';
+import { ref, watchEffect, onBeforeUnmount, nextTick, onMounted } from 'vue';
 import { dateFormatter, timeFormatter } from '@/middleware/dateFormatter';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import LoadingScreen from './LoadingScreen.vue';
 
+let isLoadingEvent = ref(true);
 const route = useRoute();
 const positionContainer = ref(null);
 const isActive = ref(true);
@@ -26,6 +28,7 @@ let resizeObserver = null;
 
 async function loadValues(eventId) {
     try {
+        isLoadingEvent.value = true;
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/info/${eventId}`);
         const newEvent = response.data;
 
@@ -41,10 +44,11 @@ async function loadValues(eventId) {
             image: newEvent.eventImage ?  newEvent.eventImage : "https://i.ibb.co/fV0kYc6T/sample-Image.jpg",
         };
 
-        await nextTick(); // Ensure Vue updates the DOM before initializing the map
         updateMap(eventData.value.pos);
     } catch (error) {
         console.error("Error fetching event data:", error);
+    } finally {
+        isLoadingEvent.value = false;
     }
 }
 
@@ -108,6 +112,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+    <LoadingScreen v-if="isLoadingEvent" />
     <main class="content">
         <h1 id="title">{{ eventData.title }}</h1>
         <h2 id="date">{{ eventData.start }} - {{ eventData.length }}</h2>
