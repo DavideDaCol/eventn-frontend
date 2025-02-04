@@ -1,6 +1,7 @@
 <script setup>
-    import { userStore } from '@/stores/user';
-import axios from 'axios';
+    import { useUserStore } from '@/stores/user';
+    const user = useUserStore();
+    import axios from 'axios';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
@@ -25,12 +26,11 @@ import axios from 'axios';
             });
 
             //saves userId to the browser for the UserInfo component
-            localStorage.setItem('userId', response.data.id);
+            await user.updateUser();
             alert("login successful. Page will be reloaded");
 
             //page reload: router tells the page to go back to itself
             router.go();
-            userStore.isLogged = true;
         } catch (error){
             alert("login failed. please try again");
             console.log(error);

@@ -25,6 +25,8 @@
 </template>
 
 <script setup>
+    import { useUserStore } from '@/stores/user';
+    const user = useUserStore();
     //TODO: real implementation
     function submitCode(){
         return 0;
@@ -34,8 +36,7 @@
         // gets the token cookie and sets it to expire in 1970 (i. e. instantly)
         document.cookie = "token" +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         //removes the user info from LocalStorage
-        localStorage.removeItem('userId');
-        localStorage.removeItem('user');
+        user.clearUser();
     }
 </script>
 
