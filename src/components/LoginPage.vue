@@ -1,23 +1,24 @@
 <script setup>
-    import axios from 'axios';
+    import { userStore } from '@/stores/user';
+import axios from 'axios';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
 
     //definemodel is used to define a 2-way reactive value (updates both js and html)
-    const username = defineModel('username');
+    const usernameOrEmail = defineModel('usernameOrEmail');
     const password  = defineModel('password');
 
     async function login() {
         //request formatting based on backend documentation
         const request = {
-            "username": username.value,
+            "usernameOrEmail": usernameOrEmail.value,
             "password": password.value
         }
         
         try{
             //makes actual axios post request
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/login`,
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/login`,
                 request, {
                 headers: {'Content-Type': 'application/json'},
                 withCredentials: true //makes it so the server sends back the auth cookie
@@ -29,6 +30,7 @@
 
             //page reload: router tells the page to go back to itself
             router.go();
+            userStore.isLogged = true;
         } catch (error){
             alert("login failed. please try again");
             console.log(error);
@@ -41,7 +43,7 @@
         <div class="wrap">
             <h1>Login</h1>
             <form @submit.prevent="login">
-                <input type="text" v-model="username" placeholder="inserisci username" />
+                <input type="text" v-model="usernameOrEmail" placeholder="inserisci username oppure email" />
                 <input type="password" v-model="password"  placeholder="inserisci password" />
                 <button type="submit">Login</button>
             </form>

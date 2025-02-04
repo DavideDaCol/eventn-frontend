@@ -26,7 +26,7 @@
 
     //gets user from database (based on the jwt token) and saves it in localstorage as cache
     async function getUserInfo(){
-        const user = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/info`, { withCredentials: true });
+        const user = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/info`, { withCredentials: true });
         localStorage.setItem('user', JSON.stringify(user.data));
         cachedUser = user.data;
 
