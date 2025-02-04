@@ -1,8 +1,28 @@
-import { reactive } from 'vue'
+import axios from 'axios';
+import { reactive, computed, watch } from 'vue'
 
-export const userStore = reactive({
-    isLogged: false,
-    username: '',
-    friends: [],
-    events: []
+const info = reactive({
+    user: JSON.parse(localStorage.getItem('user')) || null
 });
+
+const isLogged = computed(() => !!info.user);
+
+watch(() => info.user, (newUser) => {
+    if (newUser) {
+        localStorage.setItem("user", JSON.stringify(newUser));
+    }
+}, {deep: true});
+
+const updateUser = async () => {
+    const newUser = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/info`, {withCredentials: true});
+    info.user = newUser.data;
+}
+
+const clearUser = () => {
+    info.user = null;
+    localStorage.removeItem("user");
+}
+
+export function useUserStore(){
+    return { info, isLogged, updateUser, clearUser };
+}
