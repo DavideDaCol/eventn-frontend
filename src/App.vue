@@ -3,22 +3,32 @@
         <SideBar v-if="mobile"
             @search-bar="toggleSearch = !toggleSearch"
             @hall-tab="toggleHall = !toggleHall"
-            @saved-tab="toggleSaved = !toggleSaved"></SideBar>
-        <SearchBar v-if="toggleSearch"></SearchBar>
+            @saved-tab="toggleSaved = !toggleSaved"
+            @friends-tab="toggleFriends = !toggleFriends">
+        </SideBar>
+        <Transition name="fade">
+            <SearchBar v-if="toggleSearch"></SearchBar>
+        </Transition>
+        <Transition name="fade">
+            <FriendsList v-if="toggleFriends"></FriendsList>
+        </Transition>
         <router-view />
     </div>
 </template>
 
 <script setup>
     import SearchBar from './components/SearchBar.vue';
+    import FriendsList from './components/FriendsList.vue';
     import SideBar from './components/SideBar.vue'
-    import { ref } from 'vue'
+    import { ref, Transition } from 'vue'
 
     const toggleSearch = ref(false);
     const toggleHall = ref(false);
     const toggleSaved = ref(false);
+    const toggleFriends = ref(false);
 
     const mobile = ref(false);
+
     const isDesktop = () => { 
         console.log(screen.width);
         if(screen.width >= 760){
@@ -63,5 +73,16 @@
     html, body, .app {
         height: auto;
         min-height: 100vh;
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: all 0.25s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+        transform: translate(-2rem);
+        opacity: 0;
     }
 </style>

@@ -1,26 +1,34 @@
 <template>
-    <div>
-        <h1>Cerca</h1>
+    <div class="container">
+    <h1>Amici</h1>
+    <div v-if="loginState">
         <input type="search" v-model="query">
         <h3 v-for="result in searchResult" :key="result">
             {{ result.length < 35 ? result : result.substring(0,35).concat('...') }}
         </h3>
     </div>
+    <h1 v-else>Log In</h1>
+</div>
 </template>
 
 <script setup>
     import { onMounted, ref, computed } from 'vue';
-    import { globalEvents } from '@/stores/events';
+    import { useUserStore } from '@/stores/user';
+    import axios from 'axios';
     let titlesOnly = ref([]);
+    const user = useUserStore();
+    const loginState = user.isLogged;
+    const userObject = user.info.user;
+    const friends = userObject.friends
     const query = defineModel('query');
     query.value = "";
 
     onMounted(() => {
-        const allEvents = globalEvents.value;
-        allEvents.forEach(element => {
-            titlesOnly.value.push(element.eventName);
+        friends.forEach(element => {
+            //const request = await axios.get() potrebbe mancare questo endpoint
+            titlesOnly.value.push(element);
         });
-        console.log(titlesOnly);
+        console.log(titlesOnly.value);
     });
 
     const searchResult = computed(() => {
@@ -28,10 +36,12 @@
             el.toLowerCase().includes(query.value.toLowerCase())
         );
     });
+
+    console.log('balls'.length);
 </script>
 
 <style scoped>
-    div{
+    .container{
         position: absolute;
         overflow: auto;
         left: calc(2rem + 32px);
