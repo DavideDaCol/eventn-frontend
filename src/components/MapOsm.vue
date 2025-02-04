@@ -1,12 +1,14 @@
 <template>
-    <LoadingScreen v-if="isLoading" />
+    <Transition name="fade">
+        <LoadingScreen v-if="isLoading" />
+    </Transition>
     <div id="bruh" ref="mapContainer"></div>
     <InfoPopup :eventPopup="eventPopup"/>
 </template>
 
 <script setup>
     import LoadingScreen from './LoadingScreen.vue';
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, Transition } from 'vue';
     import L from 'leaflet'
     import 'leaflet/dist/leaflet.css';
     import axios from 'axios';
@@ -104,5 +106,15 @@
     #bruh{
         height: 100vh;
         width: 100%;
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 0.5s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+        opacity: 0;
     }
 </style>
