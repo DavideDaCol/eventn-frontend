@@ -19,7 +19,7 @@
         
         try{
             //makes actual axios post request
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/login`,
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/login`,
                 request, {
                 headers: {'Content-Type': 'application/json'},
                 withCredentials: true //makes it so the server sends back the auth cookie
@@ -30,7 +30,7 @@
             alert("login successful. Page will be reloaded");
 
             //page reload: router tells the page to go back to itself
-            router.go();
+            router.replace({ path: '/' });
         } catch (error){
             alert("login failed. please try again");
             console.log(error);

@@ -4,7 +4,7 @@
             <span
                 @click="routerSwitch(0)"
                 class="material-symbols-outlined"
-                :class="{ colored: loginActive }"
+                :class="{ colored: currentActive === 'login' }"
             >
                 account_circle
             </span>
@@ -12,7 +12,7 @@
                 v-for="(icon, index) in iconNames" :key="index"
                 @click="componentSwitch(icon.pos, icon.emit)"
                 class="material-symbols-outlined"
-                :class="{ colored: isActive[index + 1] }"
+                :class="{ colored: currentActive === icon.pos }"
             >
                 {{ icon.name }}
             </span>
@@ -21,7 +21,7 @@
             <span
                 @click="routerSwitch(1)"
                 class="material-symbols-outlined"
-                :class="{ colored: settingsActive }"
+                :class="{ colored: currentActive === 'settings' }"
             >
                 settings
             </span>
@@ -30,150 +30,99 @@
 </template>
 
 <script setup>
+import router from '@/router';
+import { ref } from 'vue';
 
-    import router from '@/router';
-    import { ref } from 'vue';
-    let prevEvent = 'nullEmit'; //used as a type of null object, "an object with no referenced value or with defined neutral behavior"
-    const iconNames = [
-        {
-            name: 'search', //name of the icon to display
-            pos: 1, //position of the icon in the sidebar, top to bottom (pos 0 is the login icon)
-            emit: 'searchBar' //name of the actual emit that is sent to the other components
-        },
-        {
-            name: 'menu',
-            pos: 2,
-            emit: 'hallTab'
-        },
-        {
-            name: 'star',
-            pos: 3,
-            emit: 'savedTab'
-        },
-        {
-            name: 'group',
-            pos: 4,
-            emit: 'friendsTab'
-        }];
+let prevEvent = 'nullEmit'; // Previous event to track toggling
+const iconNames = [
+    { name: 'search', pos: 1, emit: 'searchBar' },
+    { name: 'menu', pos: 2, emit: 'hallTab' },
+    { name: 'star', pos: 3, emit: 'savedTab' },
+    { name: 'group', pos: 4, emit: 'friendsTab' }
+];
 
-    const emit = defineEmits(['searchBar', 'hallTab', 'savedTab', 'friendsTab', 'nullEmit']);
-    const isActive = ref([]); //array with the state of all of the icons
-    const settingsActive = ref(false);
-    const loginActive = ref(false);
+const emit = defineEmits(['searchBar', 'hallTab', 'savedTab', 'friendsTab', 'nullEmit']);
+const currentActive = ref(null); // Tracks the active icon
 
-    //initializes all icons to be inactive on startup
-    for (let i = 0; i <= iconNames.length; i++) {
-        isActive.value.push(false);
-    }
-
-    //function used to mount auxiliary components on top of the map
-    const componentSwitch = (index, event) => {
-
-        //sets all icons to inactive
-        for (let i = 0; i <= iconNames.length; i++) {
-            if (i != index) {
-                isActive.value[i] = false;
-            }
-        }
-
-        //only sets selected icon to active
-        settingsActive.value = false;
-        loginActive.value = false;
-        isActive.value[index] = !isActive.value[index];
-
-        //sends the event associated to the icon to all other components
-        emit(event);
-
-        //if the component has changed, unmount the previous one
-        if (prevEvent != event) {
-            emit(prevEvent);
-            prevEvent = event;
-        } else prevEvent = "nullEmit";
-
-        //sends user back to the map if the icon isn't the login or the settings page
-        if (index > 0 && index < 5) {
-            router.replace({ path: '/' });
-        }
-    }
-
-    //function to navigate to a new page instead of mounting a component
-    const routerSwitch = (type) => {
-        //turns off any previous component
+// Handles component switching
+const componentSwitch = (index, event) => {
+    if (currentActive.value === index) {
+        currentActive.value = null; // Toggle off
         emit(prevEvent);
         prevEvent = 'nullEmit';
+    } else {
+        currentActive.value = index; // Activate new
+        emit(event);
 
-        //sets all the icons to inactive
-        for (let i = 1; i <= iconNames.length; i++) {
-            isActive.value[i] = false;
-        }
-
-        //change the router page
-        if (type === 0) {
-            navigateTo(loginActive, '/user');
-        } else if (type === 1) {
-            navigateTo(settingsActive, '/settings');
-        }
-
-
-    }
-
-    const navigateTo = (reference, newPath) => {
-        if (reference.value) {
-            //user wants to go back to the map: reset everything
-            reference.value = !reference.value;
-            router.replace({ path: '/' });
+        if (prevEvent !== event) {
+            emit(prevEvent);
+            prevEvent = event;
         } else {
-            //user wants to change the page
-            reference.value = true;
-            router.push({ path: newPath });
+            prevEvent = "nullEmit";
         }
+        
+        router.replace({ path: '/' }); // Always return to the map
     }
+};
 
+// Handles navigation-based icons (login and settings)
+const routerSwitch = (type) => {
+    const routeMap = { 0: 'login', 1: 'settings' };
+    const newPath = { 0: '/user', 1: '/settings' };
+
+    if (currentActive.value === routeMap[type]) {
+        currentActive.value = null;
+        router.replace({ path: '/' }); // Back to map
+    } else {
+        currentActive.value = routeMap[type];
+        router.push({ path: newPath[type] });
+    }
+};
 </script>
 
 <style scoped>
-    aside {
-        position: sticky;
-        top: 0;
-        width: calc(2rem + 32px);
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        background-color: var(--dark-main);
-        color: var(--light-main);
-        padding: 1rem;
-    }
+aside {
+    position: sticky;
+    top: 0;
+    width: calc(2rem + 32px);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-main);
+    color: var(--light-main);
+    padding: 1rem;
+}
 
-    .colored {
-        color: var(--accent-main);
-    }
+.colored {
+    color: var(--accent-main);
+}
 
-    .icons {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        font-size: 2rem;
-        padding: 0.5rem 0;
-    }
+.icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 2rem;
+    padding: 0.5rem 0;
+}
 
-    .material-symbols-outlined {
-        font-size: 2rem;
-        margin-bottom: 3rem;
-        user-select: none;
-    }
+.material-symbols-outlined {
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    user-select: none;
+}
 
-    .bottom-icons {
-        margin-top: auto;
-    }
+.bottom-icons {
+    margin-top: auto;
+}
 
-    .bottom-icons>.material-symbols-outlined {
-        padding-bottom: 1.5rem;
-    }
+.bottom-icons>.material-symbols-outlined {
+    padding-bottom: 1.5rem;
+}
 
-    .LinkStyle,
-    .LinkStyle:visited,
-    .LinkStyle:hover,
-    .LinkStyle:active {
-        color: inherit;
-    }
+.LinkStyle,
+.LinkStyle:visited,
+.LinkStyle:hover,
+.LinkStyle:active {
+    color: inherit;
+}
 </style>

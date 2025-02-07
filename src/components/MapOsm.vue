@@ -8,6 +8,7 @@
 
 <script setup>
     import LoadingScreen from './LoadingScreen.vue';
+    // eslint-disable-next-line no-unused-vars
     import { onMounted, ref, Transition } from 'vue';
     import L from 'leaflet'
     import 'leaflet/dist/leaflet.css';

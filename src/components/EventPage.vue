@@ -1,7 +1,7 @@
 <script setup>
 import axios from 'axios';
 import { useRoute } from 'vue-router';
-import { ref, watchEffect, onBeforeUnmount, nextTick, onMounted } from 'vue';
+import { ref, watchEffect, onBeforeUnmount } from 'vue';
 import { dateFormatter, timeFormatter } from '@/middleware/dateFormatter';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
