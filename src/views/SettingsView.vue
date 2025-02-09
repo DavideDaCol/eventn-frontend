@@ -41,6 +41,7 @@
                     withCredentials: true
                 });
 
+            user.eventCode = eventCode.value;
             alert("the code has been validated! redirecting...");
             router.push({ path: `/publish/${eventCode.value}`})
 

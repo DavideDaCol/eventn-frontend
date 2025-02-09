@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { reactive, computed, watch } from 'vue'
+import { reactive, ref, computed, watch } from 'vue'
 
 const info = reactive({
     user: JSON.parse(localStorage.getItem('user')) || null
 });
+
+const eventCode = ref("");
 
 const isLogged = computed(() => !!info.user);
 
@@ -24,5 +26,5 @@ const clearUser = () => {
 }
 
 export function useUserStore(){
-    return { info, isLogged, updateUser, clearUser };
+    return { info, isLogged, updateUser, clearUser, eventCode };
 }
