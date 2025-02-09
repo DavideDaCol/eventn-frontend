@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import UserView from '../views/UserView.vue'
 import EventPage from '../components/EventPage.vue'
+import PublishForm from '../components/PublishForm.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -23,6 +24,10 @@ const router = createRouter({
         {
             path: '/event/:id',
             component: EventPage
+        },
+        {
+            path: '/publish/:code',
+            component: PublishForm
         }
     ]
 })
