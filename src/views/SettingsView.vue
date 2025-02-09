@@ -16,7 +16,7 @@
                 <h3></h3>
                 <h4>Per poter pubblicare eventi su EvenTN, ogni richiesta dovrà essere prima presentata presso il comune di Trento in modo da poter verificare eventuali permessi e criteri legali. In seguito all’approvazione dell’evento, riceverai un codice da inserire per poter pubblicare il tuo evento! <br /><br />Inserisci il codice distruibuito dal comune per accedere alla pagina di pubblicazione dell’evento.</h4>
                 <form @submit.prevent="submitCode">
-                    <input id="codeField" type="text" placeholder="Inserisci il codice evento..."><br>
+                    <input id="codeField" v-model="eventCode" type="text" placeholder="Inserisci il codice evento..."><br>
                     <button type="submit" id="submitButton">Pubblica evento</button>
                 </form>
             </div>
@@ -26,10 +26,29 @@
 
 <script setup>
     import { useUserStore } from '@/stores/user';
+    import axios from 'axios';
+    import { useRouter } from 'vue-router';
     const user = useUserStore();
-    //TODO: real implementation
-    function submitCode(){
-        return 0;
+    const router = useRouter();
+
+    const eventCode = defineModel('eventCode');
+    
+    async function submitCode(){
+        try{
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/eventCodes/validate-code`,
+                {"code": eventCode.value}, {
+                    headers: {'Content-Type': 'application/json'},
+                    withCredentials: true
+                });
+
+            alert("the code has been validated! redirecting...");
+            router.push({ path: `/publish/${eventCode.value}`})
+
+        } catch (error){
+            alert("validation failed. Please try again.");
+            console.log(error);
+            router.go();
+        }
     }
 
     function clearCookies(){
