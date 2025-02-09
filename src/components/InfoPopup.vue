@@ -58,7 +58,7 @@ watch(
 );
 
 function openEvent() {
-    router.replace({ path: `/event/${eventPopup.value._id}` });
+    router.push({ path: `/event/${eventPopup.value._id}` });
 }
 </script>
 
