@@ -9,6 +9,7 @@
 
 <script setup>
     import { useUserStore } from '@/stores/user';
+    import { globalEvents } from '@/stores/events';
     import { onMounted, ref } from 'vue';
     import { useRouter } from 'vue-router';
 
@@ -16,11 +17,22 @@
     let titlesOnly = ref([]);
     const router = useRouter();
 
+    const userInfo = user.info.user;
+    const savedEvents = userInfo.events;
+
+    const allEvents = globalEvents.value;
+    let eventNames = [];
+    allEvents.forEach(el => {
+        eventNames.push([el.eventName, el._id]);
+    })
+    console.log(eventNames);
+
     onMounted(() => {
-        const userInfo = user.info.user;
-        const savedEvents = userInfo.events;
-        savedEvents.forEach(element => {
-            titlesOnly.value.push([element.eventName, element._id]);
+        eventNames.forEach(element => {
+            console.log(element[1]);
+            if(savedEvents.includes(element[1])) {
+                titlesOnly.value.push([element[0], element[1]]);
+            }
         });
         console.log(titlesOnly);
     });
