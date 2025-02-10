@@ -106,7 +106,7 @@
         overflow: auto;
         left: calc(2rem + 32px);
         z-index: 999;
-        width: 20%;
+        width: 25%;
         height: 95vh;
         margin: 1.5rem;
         border-radius: 20px;
@@ -127,7 +127,7 @@
     }
 
     .material-symbols-outlined {
-        font-size: 2rem;
+        font-size: 2em;
         user-select: none;
     }
 
@@ -138,8 +138,8 @@
     }
 
     .friend{
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 1.5em;
+        height: 1.5em;
         border: unset;
         background-color: var(--accent-main);
         color: var(--light-main);
@@ -153,7 +153,7 @@
 
     .inner-button{
         width: 45%;
-        height: 2rem;
+        height: 2em;
         border: unset;
         color: var(--light-main);
         background-color: var(--dark-sec);

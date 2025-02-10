@@ -6,8 +6,9 @@
         <div class="content">
             <div class="text-section">
                 <div class="desc centered">
-                    <h2>{{ popupStart }} - {{ popupEnd }}</h2>
-                    <p>{{ popupDesc }}</p>
+                    <h2 v-if="popupStart != popupEnd">{{ popupStart }} - {{ popupEnd }}</h2>
+                    <h2 v-else>{{ popupStart }}</h2>
+                    <p>{{ popupDesc.length > 100 ? popupDesc.substring(0,100).concat('...') : popupDesc }}</p>
                 </div>
                 <div id="attendance" class="centered">
                     <h1>{{ popupAttending }}</h1>
@@ -15,7 +16,7 @@
                 </div>
             </div>
             <div class="image">
-                <img id="eventImage" class="centered" src="../assets/sampleImage.jpg" alt="event image">
+                <img id="eventImage" class="centered" :src="popupImage" alt="event image">
             </div>
         </div>
         <div class="actions">
@@ -38,6 +39,7 @@ let popupDesc = ref('');
 let popupStart = ref('');
 let popupEnd = ref('');
 let popupAttending = ref(0);
+let popupImage = ref('');
 let isActive = ref(false);
 
 watch(
@@ -53,6 +55,7 @@ watch(
         popupStart.value = dateFormatter(eventPopup.value.eventStart);
         popupEnd.value = dateFormatter(eventPopup.value.eventLength);
         popupAttending.value = eventPopup.value.eventPresence;
+        popupImage.value = eventPopup.value.eventImage ? eventPopup.value.eventImage : 'src/assets/sampleImage.jpg';
         isActive.value = true;
     }
 );
@@ -150,6 +153,9 @@ button {
 /* Responsive Layout */
 @media (max-width: 768px) {
     .wrap {
+        position: fixed;
+        left: 50%;
+        transform: translateX(calc(-50% + 32px));
         width: 90vw;
         max-height: 70vh;
         padding: 0.5rem;
@@ -160,15 +166,12 @@ button {
         align-items: center;
     }
 
-    .image {
-        margin-left: 0;
-        margin-top: 0.5rem;
+    .text-section{
+        width: 80%
     }
 
-    .image img {
-        max-width: 100px;
-        /* Further reduced image on small screens */
-        max-height: 80px;
+    .image {
+        display: none;
     }
 
     .actions {
