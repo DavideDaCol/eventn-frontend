@@ -31,7 +31,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, onBeforeRouteLeave } from 'vue-router';
 import router from '@/router';
 
 let prevEvent = 'nullEmit'; // Previous event to track toggling
@@ -54,25 +54,29 @@ watch(
     }
 );
 
+// Reset active state when leaving the route
+onBeforeRouteLeave(() => {
+    currentActive.value = null; // Reset the active icon
+});
+
 // Handles component switching
 const componentSwitch = (index, event) => {
     if (currentActive.value === index) {
+        // If the same icon is clicked, toggle off
         currentActive.value = null; // Toggle off
-        emit(prevEvent);
-        prevEvent = 'nullEmit';
+        emit(prevEvent); // Emit the previous event
+        prevEvent = 'nullEmit'; // Reset prevEvent
     } else {
-        currentActive.value = index; // Activate new
-        emit(event);
-
-        if (prevEvent !== event) {
-            emit(prevEvent);
-            prevEvent = event;
-        } else {
-            prevEvent = "nullEmit";
+        // If a different icon is clicked, activate new
+        if (currentActive.value !== null) {
+            emit(prevEvent); // Emit the previous event before changing
         }
-        
-        router.replace({ path: '/' }); // Always return to the map
+        currentActive.value = index; // Activate new
+        emit(event); // Emit the new event
+        prevEvent = event; // Update prevEvent to the current event
     }
+    
+    router.replace({ path: '/' }); // Always return to the map
 };
 
 // Handles navigation-based icons (login and settings)
@@ -89,7 +93,6 @@ const routerSwitch = (type) => {
     }
 };
 </script>
-
 
 <style scoped>
 aside {
