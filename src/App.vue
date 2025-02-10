@@ -12,6 +12,9 @@
         <Transition name="fade">
             <FriendsList v-if="toggleFriends"></FriendsList>
         </Transition>
+        <Transition name="fade">
+            <SavedTab v-if="toggleSaved"></SavedTab>
+        </Transition>
         <router-view />
     </div>
 </template>
@@ -19,8 +22,10 @@
 <script setup>
     import SearchBar from './components/SearchBar.vue';
     import FriendsList from './components/FriendsList.vue';
-    import SideBar from './components/SideBar.vue'
-    import { ref, Transition } from 'vue'
+    import SideBar from './components/SideBar.vue';
+    import SavedTab from './components/SavedTab.vue';
+    import { ref, watch, Transition } from 'vue';
+    import { useRoute } from 'vue-router';
 
     const toggleSearch = ref(false);
     const toggleHall = ref(false);
@@ -37,6 +42,16 @@
     }; 
 
     mobile.value=isDesktop();
+
+    const route = useRoute();
+
+// Watch for route changes and reset toggled states
+    watch(route, () => {
+        toggleSearch.value = false;
+        toggleHall.value = false;
+        toggleSaved.value = false;
+        toggleFriends.value = false;
+    });
 </script>
 
 <style>
