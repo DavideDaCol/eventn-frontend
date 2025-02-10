@@ -1,16 +1,16 @@
 <script setup>
 import axios from 'axios';
 import { useRoute } from 'vue-router';
-import { ref, watchEffect, onBeforeUnmount } from 'vue';
+import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
 import { dateFormatter, timeFormatter } from '@/middleware/dateFormatter';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import LoadingScreen from './LoadingScreen.vue';
+import { useUserStore } from '@/stores/user';
 
 let isLoadingEvent = ref(true);
 const route = useRoute();
 const positionContainer = ref(null);
-const isActive = ref(true);
 const eventData = ref({
     title: '',
     start: '',
@@ -21,6 +21,8 @@ const eventData = ref({
     pos: [],
     image: '',
 });
+
+const user = useUserStore();
 
 const map = ref(null);
 const marker = ref(null);
@@ -78,19 +80,38 @@ function updateMap(position) {
 }
 
 async function addPresence() {
-    console.log("this would trigger");
-    isActive.value = !isActive.value;
+    try{
+        await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/events/counter/${route.params.id}`, {}, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials: true
+    });
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {}, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials: true
+    });
+        user.updateUser();
+    } catch (error) {
+        alert("internal issue. Please try again later");
+        console.error(error);
+    }
 }
 
-//TODO: discuss wether this should be possible for a non logged in user
-//async function getButtonState() { 
-//    const userEventList = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/events`);
-//    let isPresent = false;
-//    userEventList.forEach(el => {
-//        isPresent = el === route.params.id ? true : isPresent;
-//    });
-//    return isPresent;
-//}
+const getButtonState = computed(() => {
+    let isPresent = false;
+    if(user.isLogged){
+        const userInfo = user.info.user;
+        const userEvents = userInfo.events;
+        console.log(userEvents);
+        if (userEvents.includes(route.params.id)){
+            isPresent = true;
+        }
+    }
+    return isPresent;
+})
 
 watchEffect(() => {
     if (route.params.id) {
@@ -117,7 +138,7 @@ onBeforeUnmount(() => {
         <h1 id="title">{{ eventData.title }}</h1>
         <h2 id="date">{{ eventData.start }} - {{ eventData.length }}</h2>
         <p id="desc">{{ eventData.desc }}</p>
-        <button @click="addPresence" :class="isActive ? 'activeBtn' : 'inactiveBtn'" id="presence">
+        <button @click="addPresence" :class="!getButtonState ? 'activeBtn' : 'inactiveBtn'" id="presence">
             ci sono!
         </button>
         <div class="flexRow" id="bigContainer">

@@ -30,8 +30,9 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import router from '@/router';
-import { ref } from 'vue';
 
 let prevEvent = 'nullEmit'; // Previous event to track toggling
 const iconNames = [
@@ -43,6 +44,15 @@ const iconNames = [
 
 const emit = defineEmits(['searchBar', 'hallTab', 'savedTab', 'friendsTab', 'nullEmit']);
 const currentActive = ref(null); // Tracks the active icon
+const route = useRoute(); // Get the current route
+
+// Watch for route changes
+watch(
+    () => route.path,
+    () => {
+        currentActive.value = null; // Reset the active icon
+    }
+);
 
 // Handles component switching
 const componentSwitch = (index, event) => {
@@ -79,6 +89,7 @@ const routerSwitch = (type) => {
     }
 };
 </script>
+
 
 <style scoped>
 aside {
