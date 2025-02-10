@@ -2,8 +2,8 @@
     <div>
         <h1>Cerca</h1>
         <input type="search" v-model="query">
-        <h3 v-for="result in searchResult" :key="result">
-            {{ result.length < 35 ? result : result.substring(0,35).concat('...') }}
+        <h3 v-for="result in searchResult" :key="result" @click="openEvent(result[1])">
+            {{ result[0].length < 35 ? result[0] : result[0].substring(0,35).concat('...') }}
         </h3>
     </div>
 </template>
@@ -11,21 +11,29 @@
 <script setup>
     import { onMounted, ref, computed } from 'vue';
     import { globalEvents } from '@/stores/events';
+    import { useRouter } from 'vue-router';
+
     let titlesOnly = ref([]);
+    const router = useRouter();
+
     const query = defineModel('query');
     query.value = "";
 
     onMounted(() => {
         const allEvents = globalEvents.value;
         allEvents.forEach(element => {
-            titlesOnly.value.push(element.eventName);
+            titlesOnly.value.push([element.eventName, element._id]);
         });
         console.log(titlesOnly);
     });
 
+    function openEvent(event){
+        router.push({path: `/event/${event}`});
+    }
+
     const searchResult = computed(() => {
         return titlesOnly.value.filter(el => 
-            el.toLowerCase().includes(query.value.toLowerCase())
+            el[0].toLowerCase().includes(query.value.toLowerCase())
         );
     });
 </script>
