@@ -8,9 +8,12 @@ import 'leaflet/dist/leaflet.css';
 import LoadingScreen from './LoadingScreen.vue';
 import { useUserStore } from '@/stores/user';
 
+//shows the loading spinner if the page is fetching data
 let isLoadingEvent = ref(true);
 const route = useRoute();
+//the small frame where leaflet is loaded to show the event's position
 const positionContainer = ref(null);
+//empty template for the page's data
 const eventData = ref({
     title: '',
     start: '',
@@ -24,13 +27,16 @@ const eventData = ref({
 
 const user = useUserStore();
 
+//leaflet scaffolding
 const map = ref(null);
 const marker = ref(null);
 let resizeObserver = null;
 
+//function that fetches and fills the event data
 async function loadValues(eventId) {
     try {
         isLoadingEvent.value = true;
+        //hit events info API
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/info/${eventId}`);
         const newEvent = response.data;
 
@@ -45,7 +51,8 @@ async function loadValues(eventId) {
             pos: newEvent.eventPosition,
             image: newEvent.eventImage ?  newEvent.eventImage : "https://i.ibb.co/fV0kYc6T/sample-Image.jpg",
         };
-
+        
+        //loads the needed data to show the position of the event in a leaflet frame
         updateMap(eventData.value.pos);
     } catch (error) {
         console.error("Error fetching event data:", error);
@@ -57,6 +64,7 @@ async function loadValues(eventId) {
 function updateMap(position) {
     if (!positionContainer.value) return;
 
+    //if the map hasn't been set up yet, start doing that!
     if (!map.value) {
         map.value = L.map(positionContainer.value).setView(position, 14);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -80,19 +88,29 @@ function updateMap(position) {
 }
 
 async function addPresence() {
-    try{
+    try {
         await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/events/counter/${route.params.id}`, {}, {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials: true
-    });
-        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {}, {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials: true
-    });
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        });
+        if (getButtonState.value) { // true if the user is already present
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
+
+        } else {
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {}, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
+        }
         user.updateUser();
     } catch (error) {
         alert("internal issue. Please try again later");
