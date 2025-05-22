@@ -1,5 +1,6 @@
 <template>
     <main class="settings-page">
+        <div v-if="userState">
         <h1 id="header">Impostazioni</h1>
         <div class="wrap">
             <div id="col1" class="col">
@@ -21,6 +22,11 @@
                 </form>
             </div>
         </div>
+        </div>
+        <div v-else>
+        <h1>Log in!</h1>
+        <p>per accedere a questa sezione, per favore registrati. è semplice! clicca qui in alto a sinistra sull'icona dell'utente e premi il tasto registrati</p>
+    </div>
     </main>
 </template>
 
@@ -29,6 +35,7 @@
     import axios from 'axios';
     import { useRouter } from 'vue-router';
     const user = useUserStore();
+    const userState = user.isLogged;
     const router = useRouter();
 
     const eventCode = defineModel('eventCode');
