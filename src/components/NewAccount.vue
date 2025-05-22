@@ -1,28 +1,33 @@
 <script setup>
-    import NewAccount from '../components/NewAccount.vue';
     import { useUserStore } from '@/stores/user';
     const user = useUserStore();
-    const regpage = ref(false);
     import axios from 'axios';
     import { useRouter } from 'vue-router';
-    import { ref } from 'vue';
 
     const router = useRouter();
 
     //definemodel is used to define a 2-way reactive value (updates both js and html)
-    const usernameOrEmail = defineModel('usernameOrEmail');
+    const name = defineModel('name');
+    const surname = defineModel('surname');
+    const username = defineModel('username');
+    const email = defineModel('email');
+    const phone = defineModel('phone');
     const password  = defineModel('password');
 
-    async function login() {
+    async function register() {
         //request formatting based on backend documentation
         const request = {
-            "usernameOrEmail": usernameOrEmail.value,
+            "name": name.value,
+            "surname": surname.value,
+            "username": username.value,
+            "phone": phone.value,
+            "email": email.value,
             "password": password.value
         }
         
         try{
             //makes actual axios post request
-            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/login`,
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/registration`,
                 request, {
                 headers: {'Content-Type': 'application/json'},
                 withCredentials: true //makes it so the server sends back the auth cookie
@@ -30,35 +35,32 @@
 
             //saves userId to the browser for the UserInfo component
             await user.updateUser();
-            alert("login successful. Page will be reloaded");
+            alert("registration was successful. Page will be reloaded");
 
             //page reload: router tells the page to go back to itself
             router.replace({ path: '/' });
         } catch (error){
-            alert("login failed. please try again");
+            alert("registration failed. please try again");
             console.log(error);
         }
-    }
-
-    function handleReg() {
-        regpage.value = true;
-        console.log("regpage status: ", regpage);
     }
 </script>
 
 <template>
-    <main v-if="!regpage">
+    <main>
         <div class="wrap">
-            <h1>Login</h1>
-            <form @submit.prevent="login">
-                <input type="text" v-model="usernameOrEmail" placeholder="inserisci username oppure email" />
-                <input type="password" v-model="password"  placeholder="inserisci password" />
-                <button type="submit">Login</button>
+            <h1>Registrati</h1>
+            <form @submit.prevent="register">
+                <input type="text" v-model="name" placeholder="es. Mario" />
+                <input type="text" v-model="surname" placeholder="es. Rossi" />
+                <input type="text" v-model="username" placeholder="es. superMario92" />
+                <input type="text" v-model="phone" placeholder="es. 1234567890" />
+                <input type="text" v-model="email" placeholder="es. marioRossi@gmail.com" />
+                <input type="password" v-model="password"  placeholder="inserisci una password valida" />
+                <button type="submit">Registrati</button>
             </form>
-            <button @click="handleReg">Registrati</button>
         </div>
     </main>
-    <NewAccount v-else></NewAccount>
 </template>
 
 <style scoped>
