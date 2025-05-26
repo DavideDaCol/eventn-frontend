@@ -37,12 +37,12 @@ import router from '@/router';
 let prevEvent = 'nullEmit'; // Previous event to track toggling
 const iconNames = [
     { name: 'search', pos: 1, emit: 'searchBar' },
-    { name: 'menu', pos: 2, emit: 'hallTab' },
+    { name: 'menu', pos: 2, emit: 'tagTab' },
     { name: 'star', pos: 3, emit: 'savedTab' },
     { name: 'group', pos: 4, emit: 'friendsTab' }
 ];
 
-const emit = defineEmits(['searchBar', 'hallTab', 'savedTab', 'friendsTab', 'nullEmit']);
+const emit = defineEmits(['searchBar', 'tagTab', 'savedTab', 'friendsTab', 'nullEmit']);
 const currentActive = ref(null); // Tracks the active icon
 const route = useRoute(); // Get the current route
 

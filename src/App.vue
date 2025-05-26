@@ -2,7 +2,7 @@
     <div class="app">
         <SideBar v-if="mobile"
             @search-bar="toggleSearch = !toggleSearch"
-            @hall-tab="toggleHall = !toggleHall"
+            @tag-tab="toggleTag = !toggleTag"
             @saved-tab="toggleSaved = !toggleSaved"
             @friends-tab="toggleFriends = !toggleFriends">
         </SideBar>
@@ -15,7 +15,12 @@
         <Transition name="fade">
             <SavedTab v-if="toggleSaved"></SavedTab>
         </Transition>
-        <router-view />
+        <Transition name="fade">
+            <!-- Listen to tagSelected event from TagBar -->
+            <TagBar v-if="toggleTag" @tagSelected="handleTagSelected"></TagBar>
+        </Transition>
+        <!-- Pass selectedTag to router-view so it can reach MapOSM -->
+        <router-view :selectedTag="selectedTag" />
     </div>
 </template>
 
@@ -24,33 +29,44 @@
     import FriendsList from './components/FriendsList.vue';
     import SideBar from './components/SideBar.vue';
     import SavedTab from './components/SavedTab.vue';
+    import TagBar from './components/TagBar.vue';
     import { ref, watch, Transition } from 'vue';
     import { useRoute } from 'vue-router';
-
+    
     const toggleSearch = ref(false);
-    const toggleHall = ref(false);
+    const toggleTag = ref(false);
     const toggleSaved = ref(false);
     const toggleFriends = ref(false);
-
     const mobile = ref(false);
-
-    const isDesktop = () => { 
+    
+    // Add selectedTag state
+    const selectedTag = ref(null);
+    
+    const isDesktop = () => {
         console.log(screen.width);
         if(screen.width >= 760){
             return true;
         } else return false;
-    }; 
-
-    mobile.value=isDesktop();
-
+    };
+    
+    mobile.value = isDesktop();
     const route = useRoute();
-
-// Watch for route changes and reset toggled states
+    
+    // Handle tag selection from TagBar
+    function handleTagSelected(tag) {
+        console.log('App.vue received tagSelected event:', tag);
+        selectedTag.value = tag;
+        console.log('Updated selectedTag in App.vue:', selectedTag.value);
+    }
+    
+    // Watch for route changes and reset toggled states
     watch(route, () => {
         toggleSearch.value = false;
-        toggleHall.value = false;
+        toggleTag.value = false;
         toggleSaved.value = false;
         toggleFriends.value = false;
+        // Optional: Reset selected tag when navigating
+        // selectedTag.value = null;
     });
 </script>
 
@@ -63,14 +79,14 @@
         --accent-main: #0469B8;
         --main-font: 'Source Sans 3';
     }
-    
+   
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
         font-family: 'Source Sans 3', sans-serif;
     }
-
+    
     .app{
         display: flex;
         /* targets the router view element */
@@ -84,17 +100,17 @@
         }
         }
     }
-
+    
     html, body, .app {
         height: auto;
         min-height: 100vh;
     }
-
+    
     .fade-enter-active,
     .fade-leave-active {
         transition: all 0.25s ease;
     }
-
+    
     .fade-enter-from,
     .fade-leave-to {
         transform: translate(-2rem);
