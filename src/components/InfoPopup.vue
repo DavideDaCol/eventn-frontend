@@ -1,5 +1,6 @@
 <template>
     <div v-if="isActive" class="wrap">
+        <button class="close-button" @click="isActive = !isActive">✕</button>
         <div class="title centered">
             <h1>{{ popupName }}</h1>
         </div>
@@ -138,6 +139,10 @@ button {
     border: none;
     font-size: 1rem;
     cursor: pointer;
+    transition: transform 0.2s ease;
+}
+button:hover {
+    transform: scale(1.05); /* Slight enlargement on hover */
 }
 
 #presence {
@@ -149,7 +154,22 @@ button {
     background-color: var(--dark-sec);
     color: var(--light-main);
 }
-
+.close-button {
+    width: auto;
+    position: absolute;
+    top: 1rem;
+    right: 5%;
+    background: transparent;
+    border: none;
+    color: var(--light-main);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+}
+.close-button:hover {
+    transform: scale(1.2);
+    color: var(--accent-main); /* Optional: changes color on hover */
+}
 /* Responsive Layout */
 @media (max-width: 768px) {
     .wrap {
