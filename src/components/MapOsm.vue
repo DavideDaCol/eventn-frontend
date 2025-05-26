@@ -82,7 +82,15 @@ async function loadAndRenderPins() {
             
             const marker = L.marker(event.eventPosition, { icon })
                 .on("click", () => {
+                if (eventPopup.value._id === event._id) {
+                    // Temporarily clear to force reactivity
+                    eventPopup.value = { eventName: "nope" };
+                    setTimeout(() => {
+                        eventPopup.value = event;
+                    }, 0);
+                } else {
                     eventPopup.value = event;
+                }
                 })
                 .addTo(map.value);
             
