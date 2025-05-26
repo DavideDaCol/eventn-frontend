@@ -9,6 +9,8 @@ const eventCode = ref("");
 
 const isLogged = computed(() => !!info.user);
 
+const isAdmin = computed(() => !!info.user.isAdmin);
+
 watch(() => info.user, (newUser) => {
     if (newUser) {
         localStorage.setItem("user", JSON.stringify(newUser));
@@ -26,5 +28,5 @@ const clearUser = () => {
 }
 
 export function useUserStore(){
-    return { info, isLogged, updateUser, clearUser, eventCode };
+    return { info, isLogged, isAdmin, updateUser, clearUser, eventCode };
 }
