@@ -7,7 +7,7 @@
 
 <script setup>
 import { watch } from 'vue'; // Import watch from Vue
-import MapOSM from '@/components/MapOSM.vue'; // Adjust path as needed
+import MapOSM from '@/components/MapOsm.vue';
 
 // Accept selectedTag prop from router-view
 const props = defineProps({
