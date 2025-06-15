@@ -50,7 +50,7 @@ const searchResult = computed(() => {
 //same as above but only for events with the tag "comune"
 const searchResultTrento = computed(() => {
     return titlesOnly.value.filter(el =>
-        el[2] === 'Festival' && el[0].toLowerCase().includes(query.value.toLowerCase())
+        el[2] === 'Comune' && el[0].toLowerCase().includes(query.value.toLowerCase())
     );
 });
 
