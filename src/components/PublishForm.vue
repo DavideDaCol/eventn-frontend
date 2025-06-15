@@ -10,6 +10,17 @@
             
             <label for="end">Data e ora fine</label>
             <input type="datetime-local" id="end" v-model="eventData.eventLength" required>
+
+            <label for="tag">Descrizione</label>
+            <select id="tag" v-model="eventData.eventTag" required>
+                <option value="Musica">Musica</option>
+                <option value="Festival">Festival</option>
+                <option value="Sport">Sport</option>
+                <option value="Conferenza">Conferenza</option>
+                <option value="Sagra">Sagra</option>
+                <option value="Comune">Comune</option>
+                <option value="Altro">Altro</option>
+            </select>
             
             <label for="desc">Descrizione</label>
             <textarea id="desc" v-model="eventData.eventDescription" required></textarea>
@@ -37,7 +48,7 @@ const eventData = ref({
     eventName: '',
     eventStart: '',
     eventLength: '',
-    eventTag: 'Sport',
+    eventTag: '',
     eventDescription: '',
     xcoord: '',
     ycoord: '',
