@@ -19,7 +19,6 @@
                 <option value="Conferenza">Conferenza</option>
                 <option value="Sagra">Sagra</option>
                 <option value="Comune">Comune</option>
-                <option value="Altro">Altro</option>
             </select>
             
             <label for="desc">Descrizione</label>
