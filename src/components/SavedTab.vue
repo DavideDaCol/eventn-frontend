@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Cerca</h1>
+        <h1>Eventi Salvati</h1>
         <h3 v-for="result in titlesOnly" :key="result" @click="openEvent(result[1])">
             {{ result[0].length < 35 ? result[0] : result[0].substring(0,35).concat('...') }}
         </h3>

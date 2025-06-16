@@ -1,34 +1,28 @@
 <template>
     <div class="container">
-    <h1>Amici</h1>
-    <div v-if="loginState">
-        <div class="flex" id="top-selector">
-            <button 
-                class="inner-button" 
-                :class="{active: buttonSwitch}"
-                @click="buttonSwitch = !buttonSwitch"
-                >
+        <h1>Amici</h1>
+        <div v-if="loginState">
+            <div class="flex" id="top-selector">
+                <button class="inner-button" :class="{ active: buttonSwitch }" @click="buttonSwitch = !buttonSwitch">
                     Amici
-            </button>
-            <button 
-                class="inner-button" 
-                :class="{active: !buttonSwitch}"
-                @click="buttonSwitch = !buttonSwitch"
-                >
+                </button>
+                <button class="inner-button" :class="{ active: !buttonSwitch }" @click="buttonSwitch = !buttonSwitch">
                     Utenti
-            </button>
+                </button>
+            </div>
+            <input type="search" v-model="query">
+            <div v-for="user in searchResult" :key="user._id" class="flex user-box">
+                <span class="material-symbols-outlined"> account_circle </span>
+                <h3>
+                    {{ user.username.length < 15 ? user.username : user.username.substring(0, 15).concat('...') }} </h3>
+                        <button class="friend" :disabled="!buttonSwitch && friends.includes(getUserId(user))"
+                            @click="toggleFriend(getUserId(user), user)">
+                            {{ friends.includes(getUserId(user)) ? '✓' : '+' }}
+                        </button>
+            </div>
         </div>
-        <input type="search" v-model="query">
-        <div v-for="result in searchResult" :key="result" class="flex user-box">
-            <span class="material-symbols-outlined"> account_circle </span>
-            <h3>
-                {{ result.length < 15 ? result : result.substring(0,15).concat('...') }}
-            </h3>
-            <button class="friend">+</button>
-        </div>
+        <h1 v-else>Log In</h1>
     </div>
-    <h1 v-else>Log In</h1>
-</div>
 </template>
 
 <script setup>
@@ -47,6 +41,11 @@
     const buttonSwitch = ref(false);
 
     query.value = "";
+
+    const getUserId = (username) => {
+        const match = data.value.find(u => u.username === username.username);
+        return match ? match._id : null;
+    };
  
     const globalSearch = (users) => {
         titlesOnly.value = [];
@@ -79,10 +78,51 @@
     })
 
     const searchResult = computed(() => {
-        return titlesOnly.value.filter(el => 
-            el.toLowerCase().includes(query.value.toLowerCase())
+        const sourceList = buttonSwitch.value
+            ? data.value.filter(el => friends.includes(el._id))
+            : data.value;
+
+        const matches = sourceList.filter(user =>
+            user.username.toLowerCase().includes(query.value.toLowerCase())
         );
+
+        return matches;
     });
+
+    const toggleFriend = async (id, username) => {
+        try {
+            const isAlreadyFriend = friends.includes(id);
+
+            if (isAlreadyFriend) {
+                await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/friends/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                });
+            } else {
+                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/friends/${id}`, {}, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                });
+            }
+
+            await user.updateUser();
+            const updatedUser = user.info.user;
+            if (updatedUser) {
+                friends.splice(0, friends.length, ...updatedUser.friends);
+            }
+
+            alert(`${username.username} ${isAlreadyFriend ? 'rimosso dagli' : 'aggiunto agli'} amici!`);
+        } catch (error) {
+            console.error("Errore nella modifica della lista amici:", error);
+            alert("Si è verificato un errore. Riprova più tardi.");
+        }
+    };
+
+
 </script>
 
 <style scoped>
