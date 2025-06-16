@@ -89,29 +89,33 @@ function updateMap(position) {
 
 async function addPresence() {
     try {
-        await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/events/counter/${route.params.id}`, {}, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            withCredentials: true
-        });
-        if (getButtonState.value) { // true if the user is already present
-            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
-
+        if(!user.isLogged.value){
+            alert("per favore registrati per salvare gli eventi!");
         } else {
-            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {}, {
+            await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/events/counter/${route.params.id}`, {}, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 withCredentials: true
             });
+            if (getButtonState.value) { // true if the user is already present
+                await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                });
+
+            } else {
+                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/events/${route.params.id}`, {}, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                });
+            }
+            user.updateUser();
         }
-        user.updateUser();
     } catch (error) {
         alert("internal issue. Please try again later");
         console.error(error);
@@ -120,12 +124,17 @@ async function addPresence() {
 
 const getButtonState = computed(() => {
     let isPresent = false;
-    if(user.isLogged){
+    if(user.isLogged.value){
+        console.log(user.info);
         const userInfo = user.info.user;
-        const userEvents = userInfo.events;
-        console.log(userEvents);
-        if (userEvents.includes(route.params.id)){
-            isPresent = true;
+        if (userInfo == null){
+            console.log("user is not logged in");
+        } else {
+            const userEvents = userInfo.events;
+            console.log(userEvents);
+            if (userEvents.includes(route.params.id)){
+                isPresent = true;
+            }
         }
     }
     return isPresent;

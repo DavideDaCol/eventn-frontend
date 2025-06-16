@@ -19,12 +19,13 @@ watch(() => info.user, (newUser) => {
 
 const updateUser = async () => {
     const newUser = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/info`, {withCredentials: true});
+    console.log("updated user", newUser.data);
     info.user = newUser.data;
 }
 
 const clearUser = () => {
     info.user = null;
-    localStorage.removeItem("user");
+    localStorage.removeItem('user');
 }
 
 export function useUserStore(){

@@ -21,16 +21,20 @@
             </div>
         </div>
         <div class="actions">
-            <button id="presence">Ci sono!</button>
+            <button @click="addPresence" :class="!getButtonState ? 'activeBtn' : 'inactiveBtn'" id="presence">
+            ci sono!
+        </button>
             <button @click="openEvent" id="info">Informazioni</button>
         </div>
     </div>
 </template>
 
 <script setup>
-import { watch, toRef, ref } from 'vue';
+import { watch, toRef, ref, computed } from 'vue';
 import router from '@/router';
 import { dateFormatter } from '@/middleware/dateFormatter';
+import { useUserStore } from '@/stores/user';
+import axios from 'axios';
 
 const props = defineProps(['eventPopup']);
 const eventPopup = toRef(props, 'eventPopup');
@@ -42,6 +46,8 @@ let popupEnd = ref('');
 let popupAttending = ref(0);
 let popupImage = ref('');
 let isActive = ref(false);
+
+const user = useUserStore();
 
 watch(
     () => props.eventPopup,
@@ -64,6 +70,77 @@ watch(
 function openEvent() {
     router.push({ path: `/event/${eventPopup.value._id}` });
 }
+
+const getButtonState = computed(() => {
+    let isPresent = false;
+    if(user.isLogged){
+        console.log(user.info);
+        const userInfo = user.info.user;
+        if (userInfo == null){
+            console.log("user is not logged in");
+        } else {
+            const userEvents = userInfo.events;
+            console.log(userEvents);
+            if (userEvents.includes(eventPopup.value._id)){
+                isPresent = true;
+            }
+        }
+    }
+    return isPresent;
+});
+
+async function addPresence() {
+    try {
+        if (!user.isLogged.value) {
+            alert("per favore registrati per salvare gli eventi!");
+            return;
+        }
+
+        const wasPresent = getButtonState.value;
+
+        // 1. Update event attendance counter
+        await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/events/counter/${eventPopup.value._id}`, {}, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        });
+
+        // 2. Add or remove user from attending list
+        if (wasPresent) {
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/users/events/${eventPopup.value._id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
+        } else {
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/users/events/${eventPopup.value._id}`, {}, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
+        }
+
+        // 3. Refresh user data and event attendance count
+        await user.updateUser();
+
+        const updatedEvent = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/info/${eventPopup.value._id}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        });
+
+        popupAttending.value = updatedEvent.data.eventPresence;
+
+    } catch (error) {
+        alert("Errore durante la modifica della presenza. Riprova più tardi.");
+        console.error(error);
+    }
+}
+
 </script>
 
 <style scoped>
@@ -146,7 +223,6 @@ button:hover {
 }
 
 #presence {
-    background-color: var(--accent-main);
     color: var(--light-main);
 }
 
@@ -154,6 +230,15 @@ button:hover {
     background-color: var(--dark-sec);
     color: var(--light-main);
 }
+
+.activeBtn {
+    background-color: var(--accent-main);
+}
+
+.inactiveBtn {
+    background-color: grey;
+}
+
 .close-button {
     width: auto;
     position: absolute;
