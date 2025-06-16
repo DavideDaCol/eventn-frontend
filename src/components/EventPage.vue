@@ -3,8 +3,10 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
 import { dateFormatter, timeFormatter } from '@/middleware/dateFormatter';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
+import L from 'leaflet';
+import 'leaflet-defaulticon-compatibility';
 import LoadingScreen from './LoadingScreen.vue';
 import { useUserStore } from '@/stores/user';
 

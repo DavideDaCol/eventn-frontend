@@ -8,8 +8,10 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
+import L from 'leaflet';
+import 'leaflet-defaulticon-compatibility';
 import axios from 'axios';
 import { filename } from 'pathe/utils';
 import { globalEvents } from '@/stores/events';

@@ -42,8 +42,10 @@
 <script setup>
 import { ref, onMounted, toRaw } from 'vue';
 import { useUserStore } from '@/stores/user';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
+import L from 'leaflet';
+import 'leaflet-defaulticon-compatibility';
 import axios from 'axios';
 
 const eventData = ref({
