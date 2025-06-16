@@ -6,6 +6,8 @@ import UserView from '../views/UserView.vue'
 import EventPage from '../components/EventPage.vue'
 import PublishForm from '../components/PublishForm.vue'
 
+import { useUserStore } from '@/stores/user'
+
 const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -27,7 +29,14 @@ const router = createRouter({
         },
         {
             path: '/publish/:code',
-            component: PublishForm
+            component: PublishForm,
+            beforeEnter: () => {
+                const userStore = useUserStore();
+                console.log(userStore.hasCode.value)
+                if(userStore.hasCode.value == false){
+                    return '/'
+                }
+            }
         }
     ]
 })

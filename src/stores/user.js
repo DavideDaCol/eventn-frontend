@@ -11,6 +11,8 @@ const isLogged = computed(() => !!info.user);
 
 const isAdmin = computed(() => !!info.user.isAdmin);
 
+const hasCode = computed(() => !!eventCode.value);
+
 watch(() => info.user, (newUser) => {
     if (newUser) {
         localStorage.setItem("user", JSON.stringify(newUser));
@@ -26,8 +28,9 @@ const updateUser = async () => {
 const clearUser = () => {
     info.user = null;
     localStorage.removeItem('user');
+    eventCode.value = "";
 }
 
 export function useUserStore(){
-    return { info, isLogged, isAdmin, updateUser, clearUser, eventCode };
+    return { info, isLogged, isAdmin, updateUser, clearUser, eventCode, hasCode };
 }

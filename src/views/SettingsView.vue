@@ -26,7 +26,7 @@
             <form @submit.prevent="submitCode">
               <input
                 id="codeField"
-                v-model="eventCode"
+                v-model="eventCodeModel"
                 type="text"
                 placeholder="Inserisci il codice evento..."
               /><br />
@@ -59,8 +59,10 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 // Stato utente
-const { info, isLogged, isAdmin, clearUser, eventCode } = useUserStore();
+const { isLogged, isAdmin, clearUser, eventCode } = useUserStore();
 const router = useRouter();
+
+const eventCodeModel = defineModel('eventCodeModel');
 
 // Per admin: codice generato
 const generatedCode = ref('');
@@ -70,14 +72,14 @@ async function submitCode() {
   try {
     await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/eventCodes/validate-code`,
-      { code: eventCode.value },
+      { code: eventCodeModel.value },
       {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       }
     );
 
-    info.eventCode = eventCode.value;
+    eventCode.value = eventCodeModel.value;
     alert('Il codice è stato validato! Reindirizzamento in corso...');
     router.push({ path: `/publish/${eventCode.value}` });
   } catch (error) {
@@ -107,11 +109,12 @@ async function generateCode() {
 async function handleAdminPublish() {
   try {
     const code = await generateCode();
-    info.eventCode = code;
+    eventCode.value = code;
     alert('Codice generato! Reindirizzamento in corso...');
     router.push({ path: `/publish/${code}` });
   } catch {
     alert('Errore nella generazione del codice. Riprova.');
+    console.log(eventCode.value);
   }
 }
 
