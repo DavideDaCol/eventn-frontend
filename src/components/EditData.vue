@@ -1,52 +1,87 @@
 <template>
-  <main class="account-edit-page">
-    <h1>Modifica dati account</h1>
+  <main class="content">
+    <h1>Modifica Dati Account</h1>
 
-    <!-- Sezione dati base -->
-    <section>
+    <!-- Sezione: informazioni profilo -->
+    <section class="account-section">
       <h2>Informazioni personali</h2>
-      <form @submit.prevent="updateProfile">
-        <label>
-          Username
-          <input v-model="form.username" type="text" placeholder="Username" />
-        </label>
-        <label>
-          Nome
-          <input v-model="form.name" type="text" placeholder="Nome" />
-        </label>
-        <label>
-          Cognome
-          <input v-model="form.surname" type="text" placeholder="Cognome" />
-        </label>
-        <label>
-          Email
-          <input v-model="form.email" type="email" placeholder="Email" />
-        </label>
-        <button type="submit">Salva modifiche</button>
+      <form @submit.prevent="updateProfile" class="edit-form">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          v-model="form.username"
+          placeholder="Username"
+          required
+        />
+
+        <label for="name">Nome</label>
+        <input
+          type="text"
+          id="name"
+          v-model="form.name"
+          placeholder="Nome"
+          required
+        />
+
+        <label for="surname">Cognome</label>
+        <input
+          type="text"
+          id="surname"
+          v-model="form.surname"
+          placeholder="Cognome"
+          required
+        />
+
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          v-model="form.email"
+          placeholder="Email"
+          required
+        />
+
+        <button type="submit" class="submit-btn">Salva modifiche</button>
       </form>
     </section>
 
-    <!-- Sezione cambio password -->
-    <section>
-      <h2>Cambio password</h2>
-      <form @submit.prevent="updatePassword">
-        <label>
-          Password attuale
-          <input v-model="password.oldPassword" type="password" />
-        </label>
-        <label>
-          Nuova password
-          <input v-model="password.password" type="password" />
-        </label>
-        <label>
-          Conferma nuova password
-          <input v-model="password.passwordConfirmation" type="password" />
-        </label>
-        <button type="submit">Aggiorna password</button>
+    <!-- Sezione: cambio password -->
+    <section class="account-section">
+      <h2>Cambio Password</h2>
+      <form @submit.prevent="updatePassword" class="edit-form">
+        <label for="oldPassword">Password attuale</label>
+        <input
+          type="password"
+          id="oldPassword"
+          v-model="password.oldPassword"
+          placeholder="Password attuale"
+          required
+        />
+
+        <label for="newPassword">Nuova password</label>
+        <input
+          type="password"
+          id="newPassword"
+          v-model="password.password"
+          placeholder="Nuova password"
+          required
+        />
+
+        <label for="confirmPassword">Conferma nuova password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          v-model="password.passwordConfirmation"
+          placeholder="Conferma password"
+          required
+        />
+
+        <button type="submit" class="submit-btn">Aggiorna password</button>
       </form>
     </section>
 
-    <button @click="goBack">Annulla</button>
+    <button @click="goBack" class="cancel-btn">Annulla</button>
   </main>
 </template>
 
@@ -59,7 +94,7 @@ import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const { clearUser } = useUserStore();
 
-// Modello dati per il profilo
+// Reactive state per profilo
 const form = reactive({
   username: '',
   name: '',
@@ -67,14 +102,14 @@ const form = reactive({
   email: '',
 });
 
-// Modello dati per la password
+// Reactive state per password
 const password = reactive({
   oldPassword: '',
   password: '',
   passwordConfirmation: '',
 });
 
-// Carica i dati utente al mount
+// Al montaggio, carico dati utente
 onMounted(async () => {
   try {
     const res = await axios.get(
@@ -83,16 +118,16 @@ onMounted(async () => {
     );
     Object.assign(form, {
       username: res.data.username,
-      name:     res.data.name,
-      surname:  res.data.surname,
-      email:    res.data.email,
+      name: res.data.name,
+      surname: res.data.surname,
+      email: res.data.email,
     });
   } catch (err) {
-    console.error('Impossibile caricare utente', err);
+    console.error('Errore caricamento utente:', err);
   }
 });
 
-// Funzione per aggiornare username/name/email
+// Funzione per salvare profilo
 async function updateProfile() {
   try {
     await axios.put(
@@ -103,12 +138,12 @@ async function updateProfile() {
     alert('Profilo aggiornato con successo!');
     router.push('/settings');
   } catch (err) {
-    alert('Errore durante l’aggiornamento del profilo.');
     console.error(err);
+    alert('Errore durante l\'aggiornamento del profilo');
   }
 }
 
-// Funzione per aggiornare la password
+// Funzione per aggiornare password
 async function updatePassword() {
   try {
     await axios.put(
@@ -116,45 +151,77 @@ async function updatePassword() {
       { ...password },
       { withCredentials: true }
     );
-    alert('Password aggiornata correttamente!');
-    // opzionale: forza logout
+    alert('Password aggiornata con successo!');
     clearUser();
     router.push('/login');
   } catch (err) {
-    alert(err.response?.data?.message || 'Errore durante il cambio password.');
     console.error(err);
+    const msg = err.response?.data?.message || 'Errore nel cambio password';
+    alert(msg);
   }
 }
 
-// Torna indietro a SettingsPage
+// Torna indietro
 function goBack() {
   router.back();
 }
 </script>
 
 <style scoped>
-.account-edit-page {
+.content {
+  background-color: var(--dark-main);
+  color: var(--light-main);
+  padding: 2rem;
   max-width: 600px;
-  margin: 2rem auto;
+  margin: auto;
+  text-align: left;
 }
-form {
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.account-section {
+  margin-bottom: 2rem;
+}
+
+.edit-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+
+label {
+  font-size: 1.1rem;
+}
+
 input {
   padding: 0.5rem;
   font-size: 1rem;
+  border-radius: 5px;
+  border: none;
 }
-button {
-  margin-top: 0.5rem;
+
+.submit-btn {
+  background-color: var(--accent-main);
+  color: var(--light-main);
   padding: 0.75rem;
+  font-size: 1rem;
   font-weight: bold;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 10px;
   cursor: pointer;
 }
-section {
-  margin-bottom: 2rem;
+
+.cancel-btn {
+  background-color: transparent;
+  color: var(--light-main);
+  border: 1px solid var(--light-main);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  margin: auto;
 }
 </style>

@@ -44,8 +44,8 @@ const router = createRouter({
             component: EditData,
             beforeEnter: () => {
                 const userStore = useUserStore();
-                console.log(userStore.hasCode.value)
-                if(userStore.hasCode.value == false){
+                console.log(userStore.isLogged.value)
+                if(userStore.isLogged.value == false){
                     return '/'
                 }
             }
