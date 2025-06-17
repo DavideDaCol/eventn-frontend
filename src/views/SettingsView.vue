@@ -7,7 +7,7 @@
           <h2>Account</h2>
           <router-link to="/edit"><h3>Modifica dati</h3></router-link>
           <a @click="clearCookies"><h3>Effettua logout</h3></a>
-          <a href="" class="danger"><h3 class="danger">Elimina account</h3></a>
+          <a @click="deleteAccount" class="danger"><h3 class="danger">Elimina account</h3></a>
           <h2>Lingua</h2>
           <h3>Lingua attuale: Italiano (Italia)</h3>
           <h4 class="minor">La traduzione, al momento, è WIP. Ci scusiamo per il disagio</h4>
@@ -122,6 +122,25 @@ async function handleAdminPublish() {
 function clearCookies() {
   document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   clearUser();
+}
+
+// Eliminazione account
+async function deleteAccount(){
+    if(window.confirm("Stai per eliminare il tuo account! Questa azione è irreversibile!")){
+        try{
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/account`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
+            clearCookies();
+            alert("eliminazione completata. Ritorno alla homepage...");
+        } catch (error) {
+            console.log(error);
+            alert("Qualcosa è andato storto nella cancellazione dell'account. Per favore riprova tra poco.");
+        }
+    }
 }
 </script>
 
