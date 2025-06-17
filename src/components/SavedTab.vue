@@ -2,7 +2,7 @@
   <div class="saved-tab">
     <h1>Eventi Salvati</h1>
 
-    <template v-if="!isLoggedIn">
+    <template v-if="!isLogged">
       <p class="login-message">
         Accedi per vedere i tuoi eventi salvati.<br />
         <RouterLink to="/user" class="auth-link">Login</RouterLink>
@@ -27,7 +27,6 @@
 
     const { info, isLogged } = useUserStore();
     const router = useRouter();
-
     // Lista di eventi salvati dall'utente (se loggato)
     const savedEvents = computed(() => {
     return info.user?.events || [];
