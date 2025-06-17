@@ -119,7 +119,7 @@ async function submitEvent() {
       withCredentials: true
     });
     const newEventId = response.data.eventId;
-    await bindCode(newEventId, userStore.eventCode);
+    await bindCode(newEventId, userStore.eventCode.value);
     await handleImageUpload(newEventId);
     alert('Evento pubblicato con successo!');
   } catch (error) {
