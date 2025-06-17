@@ -70,14 +70,10 @@ let marker = null;
 onMounted(() => {
   map = L.map(mapContainer.value).setView([46.069, 11.124], 13.5);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    minZoom: 11,
+    maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
-
-  const bounds = L.latLngBounds(
-        [45.70477120908757, 10.439696563104636],
-        [46.49243389138334, 11.802673739144229]
-    );
-  map.value.setMaxBounds(bounds);
 
   map.on('click', (e) => {
     eventData.value.xcoord = e.latlng.lat;
@@ -85,6 +81,12 @@ onMounted(() => {
     if (marker) marker.remove();
     marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
   });
+
+  const bounds = L.latLngBounds(
+        [45.70477120908757, 10.439696563104636],
+        [46.49243389138334, 11.802673739144229]
+    );
+  map.setMaxBounds(bounds);
 });
 
 function cacheFile(event) {
