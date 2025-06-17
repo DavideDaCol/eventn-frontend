@@ -14,9 +14,14 @@
     const email = defineModel('email');
     const phone = defineModel('phone');
     const password  = defineModel('password');
+    const confirmPassword = defineModel('confirmPassword');
 
     async function register() {
         //request formatting based on backend documentation
+        if (password.value !== confirmPassword.value) {
+            alert('Errore: le password non corrispondono.');
+            return;
+        }
         const request = {
             "name": name.value,
             "surname": surname.value,
@@ -72,6 +77,7 @@
                 <input type="text" v-model="phone" placeholder="es. 1234567890" />
                 <input type="text" v-model="email" placeholder="es. marioRossi@gmail.com" />
                 <input type="password" v-model="password"  placeholder="inserisci una password valida" />
+                <input type="password" v-model="confirmPassword" placeholder="Conferma password" />
                 <button type="submit">Registrati</button>
             </form>
         </div>

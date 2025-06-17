@@ -6,6 +6,7 @@
     import axios from 'axios';
     import { useRouter } from 'vue-router';
     import { ref } from 'vue';
+    import { extractErrorMessages } from '../middleware/errorHelper.js';
 
     const router = useRouter();
 
@@ -35,8 +36,11 @@
             //page reload: router tells the page to go back to itself
             router.replace({ path: '/' });
         } catch (error){
-            alert("login failed. please try again");
-            console.log(error);
+            // alert("login failed. please try again");
+            // console.log(error);
+            console.error('updateProfile error payload:', error.response?.data);
+            const userMsg = extractErrorMessages(error.response?.data);
+            alert(userMsg);
         }
     }
 
