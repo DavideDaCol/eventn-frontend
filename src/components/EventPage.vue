@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
 import { dateFormatter, timeFormatter } from '@/middleware/dateFormatter';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import L from 'leaflet';
 import 'leaflet-defaulticon-compatibility';
 import LoadingScreen from './LoadingScreen.vue';
