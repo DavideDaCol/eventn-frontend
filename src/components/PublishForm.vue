@@ -47,6 +47,7 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import L from 'leaflet';
 import 'leaflet-defaulticon-compatibility';
 import axios from 'axios';
+import router from '@/router';
 
 const eventData = ref({
   eventName: '',
@@ -130,6 +131,7 @@ async function submitEvent() {
     await bindCode(newEventId, userStore.eventCode.value);
     await handleImageUpload(newEventId);
     alert('Evento pubblicato con successo!');
+    router.push('/');
   } catch (error) {
     console.error('Errore nella pubblicazione dell\'evento:', error);
     alert('Qualcosa è andato storto. Controlla che tutti i dati necessari siano presenti e riprova.');
