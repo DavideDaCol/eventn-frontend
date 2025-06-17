@@ -62,7 +62,7 @@ watch(
         popupStart.value = dateFormatter(eventPopup.value.eventStart);
         popupEnd.value = dateFormatter(eventPopup.value.eventLength);
         popupAttending.value = eventPopup.value.eventPresence;
-        popupImage.value = eventPopup.value.eventImage ? eventPopup.value.eventImage : 'src/assets/sampleImage.jpg';
+        popupImage.value = eventPopup.value.eventImage ? eventPopup.value.eventImage : "https://i.ibb.co/fV0kYc6T/sample-Image.jpg";
         isActive.value = true;
     }
 );
