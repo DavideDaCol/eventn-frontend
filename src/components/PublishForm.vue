@@ -95,7 +95,7 @@ async function handleImageUpload(eventId) {
   const imageRequest = new FormData();
   imageRequest.append('eventImage', file.value);
   imageRequest.append('eventId', eventId);
-  await axios.post(`${import.meta.env.VITE_BACKEND_URL}/events/image`, imageRequest, {
+  await axios.post(${import.meta.env.VITE_BACKEND_URL}/events/image, imageRequest, {
     headers: { 'Content-Type': 'multipart/form-data' },
     withCredentials: true
   });
@@ -104,7 +104,7 @@ async function handleImageUpload(eventId) {
 
 async function bindCode(eventId, eventCode) {
   const request = { code: eventCode, eventId };
-  await axios.post(`${import.meta.env.VITE_BACKEND_URL}/eventCodes/invalidate-code`, request, {
+  await axios.post(${import.meta.env.VITE_BACKEND_URL}/eventCodes/invalidate-code, request, {
     headers: { 'Content-Type': 'application/json' },
     withCredentials: true
   });
@@ -114,7 +114,7 @@ async function bindCode(eventId, eventCode) {
 async function submitEvent() {
   try {
     const final = toRaw(eventData.value);
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/events`, final, {
+    const response = await axios.post(${import.meta.env.VITE_BACKEND_URL}/events, final, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true
     });
