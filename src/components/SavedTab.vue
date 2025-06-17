@@ -1,40 +1,47 @@
 <template>
-    <div>
-        <h1>Eventi Salvati</h1>
-        <h3 v-for="result in titlesOnly" :key="result" @click="openEvent(result[1])">
-            {{ result[0].length < 35 ? result[0] : result[0].substring(0,35).concat('...') }}
-        </h3>
-    </div>
+  <div class="saved-tab">
+    <h1>Eventi Salvati</h1>
+
+    <template v-if="!isLoggedIn">
+      <p class="login-message">
+        Accedi per vedere i tuoi eventi salvati.<br />
+        <RouterLink to="/user" class="auth-link">Login</RouterLink>
+      </p>
+    </template>
+
+    <h3
+      v-for="result in titlesOnly"
+      :key="result[1]"
+      @click="openEvent(result[1])"
+    >
+      {{ result[0].length < 35 ? result[0] : result[0].substring(0, 35) + '...' }}
+    </h3>
+  </div>
 </template>
 
 <script setup>
+    import { computed } from 'vue';
     import { useUserStore } from '@/stores/user';
     import { globalEvents } from '@/stores/events';
-    import { onMounted, ref } from 'vue';
     import { useRouter } from 'vue-router';
 
-    const user = useUserStore();
-    let titlesOnly = ref([]);
+    const { info, isLogged } = useUserStore();
     const router = useRouter();
 
-    const userInfo = user.info.user;
-    const savedEvents = userInfo.events;
+    // Lista di eventi salvati dall'utente (se loggato)
+    const savedEvents = computed(() => {
+    return info.user?.events || [];
+    });
 
-    const allEvents = globalEvents.value;
-    let eventNames = [];
-    allEvents.forEach(el => {
-        eventNames.push([el.eventName, el._id]);
-    })
-    console.log(eventNames);
+    // Lista completa di eventi disponibili
+    const allEvents = computed(() => globalEvents.value || []);
 
-    onMounted(() => {
-        eventNames.forEach(element => {
-            console.log(element[1]);
-            if(savedEvents.includes(element[1])) {
-                titlesOnly.value.push([element[0], element[1]]);
-            }
-        });
-        console.log(titlesOnly);
+    // Filtra i titoli da mostrare
+    const titlesOnly = computed(() => {
+    if (!isLogged.value) return [];
+    return allEvents.value
+        .filter(ev => savedEvents.value.includes(ev._id))
+        .map(ev => [ev.eventName, ev._id]);
     });
 
     function openEvent(event){
