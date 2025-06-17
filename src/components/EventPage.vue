@@ -34,6 +34,9 @@ const map = ref(null);
 const marker = ref(null);
 let resizeObserver = null;
 
+//Button timer
+const isBtnDisabled = ref(false);
+
 //function that fetches and fills the event data
 async function loadValues(eventId) {
     try {
@@ -90,6 +93,8 @@ function updateMap(position) {
 }
 
 async function addPresence() {
+    if (isBtnDisabled.value) return;
+    isBtnDisabled.value = true;
     try {
         if(!user.isLogged.value){
             alert("per favore registrati per salvare gli eventi!");
@@ -121,6 +126,10 @@ async function addPresence() {
     } catch (error) {
         alert("internal issue. Please try again later");
         console.error(error);
+    }finally {
+        setTimeout(() => {
+            isBtnDisabled.value = false;
+        }, 500);
     }
 }
 
@@ -167,7 +176,7 @@ onBeforeUnmount(() => {
         <h1 id="title">{{ eventData.title }}</h1>
         <h2 id="date">{{ eventData.start }} - {{ eventData.length }}</h2>
         <p id="desc">{{ eventData.desc }}</p>
-        <button @click="addPresence" :class="!getButtonState ? 'activeBtn' : 'inactiveBtn'" id="presence">
+        <button @click="addPresence":disabled="isBtnDisabled" :class="!getButtonState ? 'activeBtn' : 'inactiveBtn'" id="presence">
             ci sono!
         </button>
         <div class="flexRow" id="bigContainer">
