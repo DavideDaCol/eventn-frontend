@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="actions">
-            <button @click="addPresence" :class="!getButtonState ? 'activeBtn' : 'inactiveBtn'" id="presence">
+            <button @click="addPresence" :disabled="isBtnDisabled" :class="!getButtonState ? 'activeBtn' : 'inactiveBtn'" id="presence">
             ci sono!
         </button>
             <button @click="openEvent" id="info">Informazioni</button>
@@ -48,6 +48,7 @@ let popupImage = ref('');
 let isActive = ref(false);
 
 const user = useUserStore();
+const isBtnDisabled = ref(false);
 
 watch(
     () => props.eventPopup,
@@ -90,6 +91,8 @@ const getButtonState = computed(() => {
 });
 
 async function addPresence() {
+    if (isBtnDisabled.value) return;
+    isBtnDisabled.value = true;
     try {
         if (!user.isLogged.value) {
             alert("per favore registrati per salvare gli eventi!");
@@ -138,6 +141,10 @@ async function addPresence() {
     } catch (error) {
         alert("Errore durante la modifica della presenza. Riprova più tardi.");
         console.error(error);
+    } finally {
+        setTimeout(() => {
+            isBtnDisabled.value = false;
+        }, 500);
     }
 }
 
