@@ -52,7 +52,7 @@
       <form @submit.prevent="updatePassword" class="edit-form">
         <label for="oldPassword">Password attuale</label>
         <input
-          
+          type="password"
           id="oldPassword"
           v-model="password.oldPassword"
           placeholder="Password attuale"
@@ -61,7 +61,7 @@
 
         <label for="newPassword">Nuova password</label>
         <input
-          
+          type="password"
           id="newPassword"
           v-model="password.password"
           placeholder="Nuova password"
@@ -70,7 +70,7 @@
 
         <label for="confirmPassword">Conferma nuova password</label>
         <input
-          
+          type="password"
           id="confirmPassword"
           v-model="password.passwordConfirmation"
           placeholder="Conferma password"
@@ -130,9 +130,10 @@ async function updateProfile() {
     await updateUser();
     alert('Profilo aggiornato con successo!');
     router.push('/settings');
-  } catch (err) {
-    console.error(err);
-    alert('Errore durante l\'aggiornamento del profilo');
+  } catch (error) {
+      console.error('updateProfile error payload:', error.response?.data);
+      const userMsg = extractErrorMessages(error.response?.data);
+      alert(userMsg);
   }
 }
 
@@ -154,10 +155,10 @@ async function updatePassword() {
     alert('Password aggiornata con successo!');
     clearUser();
     router.push('/login');
-  } catch (err) {
-    console.error('AXIOS ERROR:', err.response?.data);
-    const msg = err.response?.data?.message || 'Errore nel cambio password';
-    alert(msg);
+  } catch (error) {
+      console.error('updateProfile error payload:', error.response?.data);
+      const userMsg = extractErrorMessages(error.response?.data);
+      alert(userMsg);
   }
 }
 

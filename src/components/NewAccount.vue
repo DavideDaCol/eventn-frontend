@@ -3,6 +3,7 @@
     const user = useUserStore();
     import axios from 'axios';
     import { useRouter } from 'vue-router';
+  import { extractErrorMessages } from '../middleware/errorHelper.js';
 
     const router = useRouter();
 
@@ -39,9 +40,10 @@
 
             //page reload: router tells the page to go back to itself
             router.replace({ path: '/' });
-        } catch (error){
-            alert("registration failed. please try again");
-            console.log(error);
+        } catch (error) {
+            console.error('updateProfile error payload:', error.response?.data);
+            const userMsg = extractErrorMessages(error.response?.data);
+            alert(userMsg);
         }
     }
 </script>
