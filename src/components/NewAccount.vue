@@ -39,9 +39,36 @@
 
             //page reload: router tells the page to go back to itself
             router.replace({ path: '/' });
-        } catch (error){
-            alert("registration failed. please try again");
-            console.log(error);
+        } catch (error) {
+            // prima di tutto, fai il log completo per ispezionare struttura
+            console.error('Full registration error payload:', error.response?.data);
+
+            const data = error.response?.data || {};
+
+            // raccogliamo tutti i messaggi possibili
+            const messages = [];
+
+            // 1) se il backend ha inviato `message: "..."` lo aggiungiamo
+            if (typeof data.message === 'string') {
+                messages.push(data.message);
+            }
+
+            // 2) se esiste `data.error` e è un array, lo spalmiamo
+            if (Array.isArray(data.error)) {
+                messages.push(...data.error);
+            }
+            // 3) se `data.error` è un object-like con chiavi numeriche, ne facciamo values()
+            else if (data.error && typeof data.error === 'object') {
+                messages.push(...Object.values(data.error));
+            }
+
+            // 4) se ancora non abbiamo niente, fallback generico
+            if (messages.length === 0) {
+                messages.push('Registration failed. Please try again.');
+            }
+
+            // mostriamo tutti i messaggi in un alert
+            alert(messages.join('\n'));
         }
     }
 </script>
