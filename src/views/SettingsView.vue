@@ -5,7 +5,7 @@
       <div class="wrap">
         <div id="col1" class="col">
           <h2>Account</h2>
-          <a href=""><h3>Modifica dati</h3></a>
+          <router-link to="/account/edit"><h3>Modifica dati</h3></router-link>
           <a @click="clearCookies"><h3>Effettua logout</h3></a>
           <a href="" class="danger"><h3 class="danger">Elimina account</h3></a>
           <h2>Lingua</h2>
