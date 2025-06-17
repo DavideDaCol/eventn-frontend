@@ -73,6 +73,12 @@ onMounted(() => {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
 
+  const bounds = L.latLngBounds(
+        [45.70477120908757, 10.439696563104636],
+        [46.49243389138334, 11.802673739144229]
+    );
+  map.value.setMaxBounds(bounds);
+
   map.on('click', (e) => {
     eventData.value.xcoord = e.latlng.lat;
     eventData.value.ycoord = e.latlng.lng;
