@@ -52,7 +52,7 @@
       <form @submit.prevent="updatePassword" class="edit-form">
         <label for="oldPassword">Password attuale</label>
         <input
-          type="password"
+          
           id="oldPassword"
           v-model="password.oldPassword"
           placeholder="Password attuale"
@@ -61,7 +61,7 @@
 
         <label for="newPassword">Nuova password</label>
         <input
-          type="password"
+          
           id="newPassword"
           v-model="password.password"
           placeholder="Nuova password"
@@ -70,7 +70,7 @@
 
         <label for="confirmPassword">Conferma nuova password</label>
         <input
-          type="password"
+          
           id="confirmPassword"
           v-model="password.passwordConfirmation"
           placeholder="Conferma password"
@@ -92,7 +92,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
-const { clearUser } = useUserStore();
+const { info, updateUser, clearUser } = useUserStore();
 
 // Reactive state per profilo
 const form = reactive({
@@ -109,21 +109,13 @@ const password = reactive({
   passwordConfirmation: '',
 });
 
-// Al montaggio, carico dati utente
-onMounted(async () => {
-  try {
-    const res = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/users/me`,
-      { withCredentials: true }
-    );
-    Object.assign(form, {
-      username: res.data.username,
-      name: res.data.name,
-      surname: res.data.surname,
-      email: res.data.email,
-    });
-  } catch (err) {
-    console.error('Errore caricamento utente:', err);
+// Al montaggio, carico dal localStorage tramite lo store
+onMounted(() => {
+  if (info.user) {
+    form.username = info.user.username;
+    form.name = info.user.name;
+    form.surname = info.user.surname;
+    form.email = info.user.email;
   }
 });
 
@@ -131,10 +123,11 @@ onMounted(async () => {
 async function updateProfile() {
   try {
     await axios.put(
-      `${import.meta.env.VITE_BACKEND_URL}/users`,
-      { ...form },
+      `${import.meta.env.VITE_BACKEND_URL}/account`,
+      { username: form.username, name: form.name, surname: form.surname, email: form.email },
       { withCredentials: true }
     );
+    await updateUser();
     alert('Profilo aggiornato con successo!');
     router.push('/settings');
   } catch (err) {
@@ -146,16 +139,23 @@ async function updateProfile() {
 // Funzione per aggiornare password
 async function updatePassword() {
   try {
+    console.log(password.oldPassword);
+    console.log(password.password);
+    console.log(password.passwordConfirmation);
     await axios.put(
-      `${import.meta.env.VITE_BACKEND_URL}/users/password`,
-      { ...password },
+      `${import.meta.env.VITE_BACKEND_URL}/account/password`,
+      { oldPassword: password.oldPassword, password: password.password, passwordConfirmation: password.passwordConfirmation },
       { withCredentials: true }
     );
+    console.log('palle');
+    // console.log(password.oldPassword);
+    // console.log(password.password);
+    // console.log(password.passwordConfirmation);
     alert('Password aggiornata con successo!');
     clearUser();
     router.push('/login');
   } catch (err) {
-    console.error(err);
+    console.error('AXIOS ERROR:', err.response?.data);
     const msg = err.response?.data?.message || 'Errore nel cambio password';
     alert(msg);
   }
