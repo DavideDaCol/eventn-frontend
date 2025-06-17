@@ -31,11 +31,24 @@
             await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/registration`,
                 request, {
                 headers: {'Content-Type': 'application/json'},
+                withCredentials: true
+            });
+
+            const request2 = {
+                "usernameOrEmail": username.value,
+                "password": password.value
+            }
+
+            //logs in because idk
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/account/login`,
+                request2, {
+                headers: {'Content-Type': 'application/json'},
                 withCredentials: true //makes it so the server sends back the auth cookie
             });
 
             //saves userId to the browser for the UserInfo component
             await user.updateUser();
+            console.log(`created an account for ${user.info.value}`);
             alert("registration was successful. Page will be reloaded");
 
             //page reload: router tells the page to go back to itself
