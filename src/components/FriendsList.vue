@@ -3,22 +3,37 @@
         <h1>Amici</h1>
         <div v-if="loginState">
             <div class="flex" id="top-selector">
-                <button class="inner-button" :class="{ active: buttonSwitch }" @click="buttonSwitch = !buttonSwitch">
+                <button class="inner-button" :class="{ active: buttonSwitch }" @click="buttonSwitch = true">
                     Amici
                 </button>
-                <button class="inner-button" :class="{ active: !buttonSwitch }" @click="buttonSwitch = !buttonSwitch">
+                <button class="inner-button" :class="{ active: !buttonSwitch }" @click="buttonSwitch = false">
                     Utenti
                 </button>
             </div>
             <input type="search" v-model="query">
-            <div v-for="user in searchResult" :key="user._id" class="flex user-box">
-                <span class="material-symbols-outlined"> account_circle </span>
-                <h3>
-                    {{ user.username.length < 15 ? user.username : user.username.substring(0, 15).concat('...') }} </h3>
-                        <button class="friend" :disabled="!buttonSwitch && friends.includes(getUserId(user))"
-                            @click="toggleFriend(getUserId(user), user)">
-                            {{ friends.includes(getUserId(user)) ? '✓' : '+' }}
-                        </button>
+            <div v-for="user in searchResult" :key="user._id">
+                <div class="flex user-box">
+                    <span class="material-symbols-outlined"> account_circle </span>
+                    <h3 @click="toggleExpand(user._id)" class="cursor-pointer" style="cursor: pointer;">
+                        {{ user.username.length < 15 ? user.username : user.username.substring(0, 15).concat('...') }} </h3>
+                            <button class="friend" :disabled="!buttonSwitch && friends.includes(getUserId(user))"
+                                @click="toggleFriend(getUserId(user), user)">
+                                {{ friends.includes(getUserId(user)) ? '✓' : '+' }}
+                            </button>
+                </div>
+                <div v-if="expanded.includes(user._id)" class="events-list">
+                    <p v-if="eventsForUser(user).length === 0">
+                    Nessun evento salvato
+                    </p>
+                    <ul v-else>
+                        <h3>
+                            Eventi a cui intende partecipare:
+                        </h3>
+                        <li v-for="ev in eventsForUser(user)":key="ev._id" @click="() => $router.push(`/event/${ev._id}`)" class="cursor-pointer" style="cursor: pointer;">
+                            {{ ev.eventName.length <20 ? ev.eventName : ev.eventName.substring(0, 20).concat('...') }}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <template v-else>
@@ -33,6 +48,7 @@
 <script setup>
     import { onMounted, ref, computed, watch } from 'vue';
     import { useUserStore } from '@/stores/user';
+    import { globalEvents } from '@/stores/events';
     import axios from 'axios';
 
     let titlesOnly = ref([]);
@@ -45,7 +61,27 @@
     const friendNames = ref([]);
     const buttonSwitch = ref(false);
 
+    //lista di utenti espansi
+    const expanded = ref([]);
+    const allEvents = computed(() => globalEvents.value || []);
+
     query.value = "";
+
+    
+    function toggleExpand(userId){
+       const idx = expanded.value.indexOf(userId);
+       if (idx > -1) {
+         expanded.value.splice(idx, 1);
+       } else {
+         expanded.value.push(userId);
+       }
+    }
+
+    function eventsForUser(user) {
+        const savedIds = user.events || [];
+        return allEvents.value.filter(ev => savedIds.includes(ev._id));
+    }
+
 
     const getUserId = (username) => {
         const match = data.value.find(u => u.username === username.username);
@@ -127,6 +163,8 @@
         }
     };
 
+    
+
 
 </script>
 
@@ -207,5 +245,11 @@
 
     .active{
         background-color: var(--accent-main);
+    }
+
+    .events-list ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
     }
 </style>
