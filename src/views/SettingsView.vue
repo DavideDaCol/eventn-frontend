@@ -6,8 +6,8 @@
         <div id="col1" class="col">
           <h2>Account</h2>
           <router-link to="/edit"><h3>Modifica dati</h3></router-link>
-          <a @click="clearCookies"><h3>Effettua logout</h3></a>
-          <a @click="deleteAccount" class="danger"><h3 class="danger">Elimina account</h3></a>
+          <a @click="clearCookies" style="cursor: pointer;"><h3>Effettua logout</h3></a>
+          <a @click="deleteAccount" class="danger" style="cursor: pointer;"><h3 class="danger">Elimina account</h3></a>
           <h2>Lingua</h2>
           <h3>Lingua attuale: Italiano (Italia)</h3>
           <h4 class="minor">La traduzione, al momento, è WIP. Ci scusiamo per il disagio</h4>
@@ -30,7 +30,7 @@
                 type="text"
                 placeholder="Inserisci il codice evento..."
               /><br />
-              <button type="submit" id="submitButton">Pubblica evento</button>
+              <button type="submit" id="submitButton" style="cursor: pointer;">Pubblica evento</button>
             </form>
           </template>
 

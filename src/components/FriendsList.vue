@@ -21,7 +21,12 @@
                         </button>
             </div>
         </div>
-        <h1 v-else>Log In</h1>
+        <template v-else>
+            <p class="login-message">
+                Accedi per vedere e gestire i tuoi amici<br />
+                <RouterLink to="/user" class="auth-link">Login</RouterLink>
+            </p>
+        </template>
     </div>
 </template>
 
