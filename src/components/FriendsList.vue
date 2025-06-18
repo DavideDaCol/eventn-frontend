@@ -3,10 +3,10 @@
         <h1>Amici</h1>
         <div v-if="loginState">
             <div class="flex" id="top-selector">
-                <button class="inner-button" :class="{ active: buttonSwitch }" @click="buttonSwitch = true">
+                <button class="inner-button" :class="{ active: buttonSwitch }" @click="buttonSwitch = toggleSwitch(true)">
                     Amici
                 </button>
-                <button class="inner-button" :class="{ active: !buttonSwitch }" @click="buttonSwitch = false">
+                <button class="inner-button" :class="{ active: !buttonSwitch }" @click="buttonSwitch = toggleSwitch(false)">
                     Utenti
                 </button>
             </div>
@@ -14,14 +14,14 @@
             <div v-for="user in searchResult" :key="user._id">
                 <div class="flex user-box">
                     <span class="material-symbols-outlined"> account_circle </span>
-                    <h3 @click="toggleExpand(user._id)" class="cursor-pointer" style="cursor: pointer;">
+                    <h3 @click="toggleExpand(user._id)" class="cursor-pointer" :style="{ cursor: buttonSwitch ? 'pointer' : 'default' }">
                         {{ user.username.length < 15 ? user.username : user.username.substring(0, 15).concat('...') }} </h3>
                             <button class="friend" :disabled="!buttonSwitch && friends.includes(getUserId(user))"
                                 @click="toggleFriend(getUserId(user), user)">
                                 {{ friends.includes(getUserId(user)) ? '✓' : '+' }}
                             </button>
                 </div>
-                <div v-if="expanded.includes(user._id)" class="events-list">
+                <div v-if="buttonSwitch===true && expanded.includes(user._id)" class="events-list">
                     <p v-if="eventsForUser(user).length === 0">
                     Nessun evento salvato
                     </p>
@@ -29,7 +29,7 @@
                         <h3>
                             Eventi a cui intende partecipare:
                         </h3>
-                        <li v-for="ev in eventsForUser(user)":key="ev._id" @click="() => $router.push(`/event/${ev._id}`)" class="cursor-pointer" style="cursor: pointer;">
+                        <li v-for="ev in eventsForUser(user)":key="ev._id" @click="() => $router.push(`/event/${ev._id}`)" class="underline" style="cursor: pointer;">
                             {{ ev.eventName.length <20 ? ev.eventName : ev.eventName.substring(0, 20).concat('...') }}
                         </li>
                     </ul>
@@ -69,12 +69,20 @@
 
     
     function toggleExpand(userId){
-       const idx = expanded.value.indexOf(userId);
-       if (idx > -1) {
-         expanded.value.splice(idx, 1);
-       } else {
-         expanded.value.push(userId);
+        if(buttonSwitch.value){
+            const idx = expanded.value.indexOf(userId);
+            if (idx > -1) {
+                expanded.value.splice(idx, 1);
+            } else {
+                expanded.value.push(userId);
+            }
+        }
+    }
+    function toggleSwitch(value){
+       if (!value){
+        expanded.value.splice(0, expanded.value.length);
        }
+       return(value);
     }
 
     function eventsForUser(user) {
@@ -251,5 +259,8 @@
         list-style-type: none;
         margin: 0;
         padding: 0;
+    }
+    .underline {
+        text-decoration-line: underline;
     }
 </style>
