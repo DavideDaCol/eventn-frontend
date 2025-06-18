@@ -134,8 +134,8 @@
         const sourceList = buttonSwitch.value
             ? data.value.filter(el => friends.includes(el._id))
             : data.value;
-
-        const matches = sourceList.filter(user =>
+        const withoutSelf = sourceList.filter(el => el._id !== userObject._id);
+        const matches = withoutSelf.filter(user =>
             user.username.toLowerCase().includes(query.value.toLowerCase())
         );
 
