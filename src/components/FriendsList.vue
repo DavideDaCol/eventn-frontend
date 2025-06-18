@@ -15,7 +15,11 @@
                 <div class="flex user-box">
                     <span class="material-symbols-outlined"> account_circle </span>
                     <h3 @click="toggleExpand(user._id)" class="cursor-pointer" :style="{ cursor: buttonSwitch ? 'pointer' : 'default' }">
-                        {{ user.username.length < 15 ? user.username : user.username.substring(0, 15).concat('...') }} </h3>
+                        {{ (user.username.length < 15 ? user.username : user.username.substring(0, 15).concat('...')) }} 
+                        <span v-if="buttonSwitch" class="arrow">
+                        {{ expanded.includes(user._id) ? '⮛' : '⮘' }}
+                        </span>
+                    </h3>
                             <button class="friend" :disabled="!buttonSwitch && friends.includes(getUserId(user))"
                                 @click="toggleFriend(getUserId(user), user)">
                                 {{ friends.includes(getUserId(user)) ? '✓' : '+' }}
@@ -262,5 +266,8 @@
     }
     .underline {
         text-decoration-line: underline;
+    }
+    .arrow{
+        color: var(--dark-sec);
     }
 </style>
